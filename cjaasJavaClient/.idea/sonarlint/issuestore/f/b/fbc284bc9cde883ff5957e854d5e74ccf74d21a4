@@ -1,0 +1,24 @@
+
+R	java:S125Š"<This block of commented-out lines of code should be removed.(¹ÂÙ‡
+I
+java:S1128)".Remove this unused import 'java.util.HashMap'.(™˜”€ùÿÿÿÿ
+Q
+java:S1128"6Remove this unused import 'io.gsonfire.PostProcessor'.(¬û¿’øÿÿÿÿ
+g
+java:S1301Û"KReplace this "switch" statement by "if" statements to increase readability.(¿Õº™ùÿÿÿÿ
+g
+java:S1301Ì"KReplace this "switch" statement by "if" statements to increase readability.(¿Õº™ùÿÿÿÿ
+U
+java:S11449":Remove this unused private "getDiscriminatorValue" method.(Çùââùÿÿÿÿ
+K
+java:S1128"5Remove this unused import 'io.gsonfire.TypeSelector'.(„ÏˆÓ
+Q
+java:S1141Ò"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+R
+java:S1144A"<Remove this unused private "getClassByDiscriminator" method.(£·
+g
+java:S1301¯"KReplace this "switch" statement by "if" statements to increase readability.(¿Õº™ùÿÿÿÿ
+g
+java:S1301•"KReplace this "switch" statement by "if" statements to increase readability.(¿Õº™ùÿÿÿÿ
+M
+java:S1128"7Remove this unused import 'com.google.gson.JsonObject'.(µÊ´½
