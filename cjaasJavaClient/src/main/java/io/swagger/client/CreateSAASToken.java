@@ -26,7 +26,7 @@ public class CreateSAASToken {
         String tokenExpires = ZonedDateTime.now(ZoneId.of("UTC")).plusDays(validityDays).plusHours(validityHours)
                                 .format(DateTimeFormatter.ISO_INSTANT);
         tokenExpires = tokenExpires.replace(" ", "T");
-        String tokenStr = StringUtils.join("st={", tenant, "}&so={", org, "}&ss={", service, "}&sp={", permission, "}&se={", tokenExpires, "}&sk={", keyName, "}");
+        String tokenStr = StringUtils.join("st=", tenant, "&so=", org, "&ss=", service, "&sp=", permission, "&se=", tokenExpires, "&sk=", keyName);
         String base64HmacSha256 = null;
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
@@ -37,10 +37,12 @@ public class CreateSAASToken {
         } catch (Exception e) {
             throw new RuntimeException("Failed to calculate hmac-sha256", e);
         }
-        return base64HmacSha256;
+        String token = "SharedAccessSignature " + tokenStr + "&sig=" + base64HmacSha256;
+        return token;
     }
 
     public static void main(String[] args){
-        createSaasToken("x", "123","456","datasink", "read","orc", 1,1);
+        String saasToken = createSaasToken("x", "123", "456", "datasink", "read", "orc", 1, 1);
+        System.out.println("Generated Token: " + saasToken);
     }
 }
