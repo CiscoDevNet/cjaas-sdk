@@ -35,13 +35,16 @@ class generate_saas_token:
             raise ValueError("Both validityDays and validityHours can't be 0")
         valid_until = (datetime.utcnow() + timedelta(days=param.validity_days) + timedelta(
             hours=param.validity_hours)).isoformat(timespec='milliseconds')
-        token = "st={" + param.tenant + "}&so={" + param.org + "}&ss={" + param.service + \
-                "}&sp={" + param.permission + "}&se={" + valid_until + "Z}&sk={" + param.key_name + "} "
+        token = "st=" + param.tenant + "&so=" + param.org + "&ss=" + param.service + \
+                "&sp=" + param.permission + "&se=" + \
+            valid_until + "Z&sk=" + param.key_name
         message = bytes(token, 'utf-8')
         secret = bytes(param.tenant_key, 'utf-8')
-        signature = base64.b64encode(hmac.new(secret, message, digestmod=hashlib.sha256).digest())
-        # print(signature)
-        return signature
+        signature = base64.b64encode(
+            hmac.new(secret, message, digestmod=hashlib.sha256).digest())
+        result = "SharedAccessSignature " + token + "&sig=" + signature.decode("utf-8")
+        print(result)
+        return result
 
 
 if __name__ == "__main__":
