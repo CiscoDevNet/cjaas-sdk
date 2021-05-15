@@ -42,8 +42,9 @@ class generate_saas_token:
         secret = bytes(param.tenant_key, 'utf-8')
         signature = base64.b64encode(
             hmac.new(secret, message, digestmod=hashlib.sha256).digest())
-        print(token + "&sig=" + signature.decode("utf-8"))
-        return signature
+        result = "SharedAccessSignature " + token + "&sig=" + signature.decode("utf-8")
+        print(result)
+        return result
 
 
 if __name__ == "__main__":
