@@ -24,7 +24,7 @@ This project leverages the mega-awesome [swagger-tools](https://github.com/apige
 
 ## Generate SAS Token
 
-- In '_cjaasNodeJSServer/swagger-generated_'
+- In '_cjaasNodeJSClient/swagger-generated_'
 
 ### Help
 
