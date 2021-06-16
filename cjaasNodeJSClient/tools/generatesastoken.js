@@ -24,8 +24,8 @@ function verifyArguments(args){
   
   parser.add_argument('-v', '--version', { action: 'version', version });
   parser.add_argument('-secret', {help: 'secret: your secret key'});
-  parser.add_argument('-t', {help: 'tenant: tenant'});
-  parser.add_argument('-n', {help: 'namespace: customer namespace/org'});
+  parser.add_argument('-o', {help: 'organization: organization'});
+  parser.add_argument('-n', {help: 'namespace: customer namespace'});
   parser.add_argument('-s', {help: 'service: particular service to be queried'});
   parser.add_argument('-p', {help: 'permissions: one of the following (r|w|rw)'});
   parser.add_argument('-kn', {help: 'keyname: key name'});
@@ -37,8 +37,8 @@ function verifyArguments(args){
   if(!args['secret']){
     throw '-secret argument missing!';
   }
-  if(!args['t']){
-    throw '-t argument missing!';
+  if(!args['o']){
+    throw '-o argument missing!';
   }
   if(!args['n']){
     throw '-n argument missing!';
@@ -58,13 +58,13 @@ function verifyArguments(args){
 
 function generateSasToken(args) { 
   var secret = args['secret'];
-  var tenant = args['t'];
+  var organization = args['o'];
   var namespace = args['n'];
   var service = args['s'];
   var permissions = args['p'];
   var keyName = args['kn'];
   var expiration = new Date(generateExpiration(args)).toISOString();
-  var sasTokenPrefix = `st=${tenant}&so=${namespace}&ss=${service}&sp=${permissions}&se=${expiration}&sk=${keyName}`;
+  var sasTokenPrefix = `so=${organization}&sn=${namespace}&ss=${service}&sp=${permissions}&se=${expiration}&sk=${keyName}`;
   var signature = crypto.createHmac('sha256', secret).update(sasTokenPrefix).digest('base64'); 
   return `SharedAccessSignature ${sasTokenPrefix}&sig=${signature}`; 
 }
