@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "noImplicitAny": true,
+    "module": "es2020",
+    "target": "es6",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "baseUrl": "src",
+    "allowSyntheticDefaultImports": true,
+    "paths": {
+      "@segment-core": [
+        "../node_modules/@segment/analytics.js-core/build/analytics"
+      ]
+    }
+  },
+  "exclude": ["node_modules"]
+}
