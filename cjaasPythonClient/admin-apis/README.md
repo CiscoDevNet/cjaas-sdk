@@ -109,7 +109,7 @@ except ApiException as e:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://cjaas-devus1-admin.azurewebsites.net/*
+All URIs are relative to *https://uswest-nonprod.cjaas.cisco.com/admin/*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
