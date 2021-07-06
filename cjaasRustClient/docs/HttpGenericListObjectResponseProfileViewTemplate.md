@@ -1,12 +1,11 @@
-# ProfileAttributeView
+# HttpGenericListObjectResponseProfileViewTemplate
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**query_template** | Option<[**crate::models::ProfileViewBuilderTemplateAttribute**](profileViewBuilderTemplateAttribute.md)> |  | [optional]
-**result** | Option<**String**> |  | [optional]
-**journey_events** | Option<**String**> |  | [optional]
+**meta** | Option<[**crate::models::HttpResponseMeta**](httpResponseMeta.md)> |  | [optional]
+**data** | Option<[**Vec<crate::models::ProfileViewTemplate>**](profileViewTemplate.md)> |  | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -1,12 +1,11 @@
-# ProfileAttributeView
+# ErrorObject
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**query_template** | Option<[**crate::models::ProfileViewBuilderTemplateAttribute**](profileViewBuilderTemplateAttribute.md)> |  | [optional]
-**result** | Option<**String**> |  | [optional]
-**journey_events** | Option<**String**> |  | [optional]
+**key** | Option<**i32**> |  | [optional]
+**message** | Option<[**Vec<crate::models::MessageObject>**](messageObject.md)> |  | [optional]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
