@@ -1,62 +1,62 @@
 'use strict';
-const { ArgumentParser } = require('../swagger-generated/node_modules/argparse');
-const { version } = require('../swagger-generated/package.json');
+const { ArgumentParser } = require('../apis/node_modules/argparse');
+const { version } = require('../apis/package.json');
 const crypto = require('crypto')
- 
-function generateExpiration(args){
+
+function generateExpiration(args) {
   var validitySum = 0;
-  validitySum += parseInt(args['vd']) ? args['vd']*60*60*24 : 0;
-  validitySum += parseInt(args['vh']) ? args['vh']*60*60 : 0;
-  
-  if(validitySum === 0){
+  validitySum += parseInt(args['vd']) ? args['vd'] * 60 * 60 * 24 : 0;
+  validitySum += parseInt(args['vh']) ? args['vh'] * 60 * 60 : 0;
+
+  if (validitySum === 0) {
     //default 1 week
-    validitySum = 60*60*24*7;
+    validitySum = 60 * 60 * 24 * 7;
   }
 
-  var now = new Date(); 
-  return Math.round(now.getTime()) + (validitySum*1000);
+  var now = new Date();
+  return Math.round(now.getTime()) + (validitySum * 1000);
 }
 
-function verifyArguments(args){
+function verifyArguments(args) {
   const parser = new ArgumentParser({
     description: 'SAS Token Generator!'
   });
-  
+
   parser.add_argument('-v', '--version', { action: 'version', version });
-  parser.add_argument('-secret', {help: 'secret: your secret key'});
-  parser.add_argument('-o', {help: 'organization: organization'});
-  parser.add_argument('-n', {help: 'namespace: customer namespace'});
-  parser.add_argument('-s', {help: 'service: particular service to be queried'});
-  parser.add_argument('-p', {help: 'permissions: one of the following (r|w|rw)'});
-  parser.add_argument('-kn', {help: 'keyname: key name'});
-  parser.add_argument('-vd', {help: 'validitydays: expire in this number of days'});
-  parser.add_argument('-vh', {help: 'validityhours:expire in this number of hours'});
-  
+  parser.add_argument('-secret', { help: 'secret: your secret key' });
+  parser.add_argument('-o', { help: 'organization: organization' });
+  parser.add_argument('-n', { help: 'namespace: customer namespace' });
+  parser.add_argument('-s', { help: 'service: particular service to be queried' });
+  parser.add_argument('-p', { help: 'permissions: one of the following (r|w|rw)' });
+  parser.add_argument('-kn', { help: 'keyname: key name' });
+  parser.add_argument('-vd', { help: 'validitydays: expire in this number of days' });
+  parser.add_argument('-vh', { help: 'validityhours:expire in this number of hours' });
+
   var args = parser.parse_args();
 
-  if(!args['secret']){
+  if (!args['secret']) {
     throw '-secret argument missing!';
   }
-  if(!args['o']){
+  if (!args['o']) {
     throw '-o argument missing!';
   }
-  if(!args['n']){
+  if (!args['n']) {
     throw '-n argument missing!';
   }
-  if(!args['s']){
+  if (!args['s']) {
     throw '-s argument missing!';
   }
-  if(!args['p']){
+  if (!args['p']) {
     throw '-p argument missing!';
   }
-  if(!args['kn']){
+  if (!args['kn']) {
     throw '-kn argument missing!';
   }
 
   return args;
 }
 
-function generateSasToken(args) { 
+function generateSasToken(args) {
   var secret = args['secret'];
   var organization = args['o'];
   var namespace = args['n'];
@@ -65,8 +65,8 @@ function generateSasToken(args) {
   var keyName = args['kn'];
   var expiration = new Date(generateExpiration(args)).toISOString();
   var sasTokenPrefix = `so=${organization}&sn=${namespace}&ss=${service}&sp=${permissions}&se=${expiration}&sk=${keyName}`;
-  var signature = crypto.createHmac('sha256', secret).update(sasTokenPrefix).digest('base64'); 
-  return `SharedAccessSignature ${sasTokenPrefix}&sig=${signature}`; 
+  var signature = crypto.createHmac('sha256', secret).update(sasTokenPrefix).digest('base64');
+  return `SharedAccessSignature ${sasTokenPrefix}&sig=${signature}`;
 }
 
 /* Begin */
@@ -75,7 +75,7 @@ try {
   var sasToken = generateSasToken(verifiedArguments);
   console.log('\n-- SUCCESS --')
   console.log(sasToken);
-} catch(err) {
+} catch (err) {
   console.log('\n-- ERROR --')
   console.log(err);
 }
