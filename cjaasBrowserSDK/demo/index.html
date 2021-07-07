@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    Customer Journey as a service
+
+    <button data-product_id="1" data-product_sku="1123">Continue</button>
+    <button data-product_id="2">Continue Again</button>
+    <script>
+      window.cjaas = function (...args) {
+        if (cjaas && cjaas.q) {
+          cjaas.q.push(args);
+        } else {
+          cjaas.q = [args];
+        }
+      };
+
+      // // where are the scripts hosted?
+      // necessary to fetch other dependancies
+      window.cjaas.scriptURL = "../dist";
+      // window.cjaas.scriptURL = "https://cjaas.cisco.com/event-listener";
+
+      // where is the server hosted?
+      // window.cjaas.baseURL = "https://uswest-nonprod.cjaas.cisco.com";
+
+      let script = document.createElement("script");
+      script.src = window.cjaas.scriptURL + "/ref-cj-analytics.js";
+      script.type = "module";
+      script.async = true;
+      document.body.appendChild(script);
+
+      // sets the Datasink write token
+      cjaas("dsWriteToken", "sample-id-est");
+
+      // sets the stream read token
+      cjaas("streamReadToken", "sample-id-est");
+
+      // page events will be tracked
+      cjaas("option", "PAGE_TRACK", true);
+      cjaas("option", "ENABLE_ORCHESTRATION", true);
+
+      // tracks the event on first element that maches the selector. (button)
+      // cjaas("listen", "button", "Add to Cart", "click");
+      // tracks the event on first element that maches the selector. (button)
+      // sends the attribute product id from each of the button
+
+      cjaas("listen_all", "button", "Add to Cart", "click", [
+        "data-product_id",
+        "data-product_sku",
+      ]);
+
+      // init tracking
+      cjaas("init");
+
+      setInterval(() => {
+        let span = document.createElement("span");
+        span.innerText = "Hello";
+        document.body.appendChild(span);
+      }, 1000);
+    </script>
+
+    <script>
+      window.addEventListener("Journey Interrupted", function (ev) {
+        console.log("event from journey", ev);
+      });
+    </script>
+  </body>
+</html>
