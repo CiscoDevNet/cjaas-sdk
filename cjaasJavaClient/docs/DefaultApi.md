@@ -1,6 +1,6 @@
 # DefaultApi
 
-All URIs are relative to *https://trycjaas.azurewebsites.net/*
+All URIs are relative to *https://uswest-nonprod.cjaas.cisco.com/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -132,7 +132,7 @@ Data Ingestion is based on Cloud Events specification for describing event data 
 
 
 DefaultApi apiInstance = new DefaultApi();
-CloudEvent body = new CloudEvent(); // CloudEvent | 
+CloudEvent body = new CloudEvent(); // CloudEvent |
 String authorization = "authorization_example"; // String | SAS Signature
 try {
     apiInstance.dataSink(body, authorization);
@@ -608,7 +608,7 @@ Trigger a Online Orchestration such as Webex Walkin or Display Offer Or Chat Bot
 
 
 DefaultApi apiInstance = new DefaultApi();
-OnlineOrchestration body = new OnlineOrchestration(); // OnlineOrchestration | 
+OnlineOrchestration body = new OnlineOrchestration(); // OnlineOrchestration |
 String person = "person_example"; // String | Unique Person ID to filter by
 String authorization = "authorization_example"; // String | Optional SAS Signature within Header
 String sig = "sig_example"; // String | Optional SAS Signature within QueryString
@@ -659,7 +659,7 @@ The profile view is created based on a view template that is provided as input. 
 
 
 DefaultApi apiInstance = new DefaultApi();
-ProfileViewBuilderTemplate body = new ProfileViewBuilderTemplate(); // ProfileViewBuilderTemplate | 
+ProfileViewBuilderTemplate body = new ProfileViewBuilderTemplate(); // ProfileViewBuilderTemplate |
 String authorization = "authorization_example"; // String | SAS Signature
 String personId = "personId_example"; // String | Identifies the person for whom the profile view is requested
 try {
@@ -849,7 +849,7 @@ Update, get data retention, destinations and more
 
 
 DefaultApi apiInstance = new DefaultApi();
-AccountSettings body = new AccountSettings(); // AccountSettings | 
+AccountSettings body = new AccountSettings(); // AccountSettings |
 String authorization = "authorization_example"; // String | SAS Signature
 try {
     AccountSettings result = apiInstance.updateSettings(body, authorization);
