@@ -1,0 +1,1792 @@
+openapi: 3.0.1
+info:
+  title: Azure Functions OpenAPI Extension
+  version: 1.0.0
+servers:
+- url: https://cjaas-devus1.azurewebsites.net/
+paths:
+  /v1/journey/reports/{reportname}:
+    get:
+      tags:
+      - Journey
+      summary: Get Report by Name
+      description: "Get a certain usage report. \n\nSAS Token Requirements:\n - ss=account\n\
+        \ - sp=r"
+      operationId: GetReportByName
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: reportname
+        in: path
+        description: "Report Name \n Options: yearlyusage | monthlyusage"
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: "Report Name \n Options: yearlyusage | monthlyusage"
+          x-ms-visibility: important
+        x-ms-summary: "Report Name \n Options: yearlyusage | monthlyusage"
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpReportObjectResponse'
+          x-ms-summary: Result of Get Report by Name
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/events:
+    get:
+      tags:
+      - Journey
+      summary: Read Events
+      description: |-
+        The Tape holds running stream of customer journey events that arrive onto Data Sink from all channels, across mediums. Tape is an append-only, immutable data ledger that can be queried to retrieve snapshot of latest events that moment in time or historically to play-back events as they occurred to understand or analyze Journeys using ML/AI models.
+
+        SAS Token Requirements:
+         - ss=tape
+         - sp=r
+      operationId: ReadEvents
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: $filter
+        in: query
+        description: 'oData Filter Expressions to Slice/Dice Search, ex: type eq ''Add
+          To Cart'''
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: oData Filter Expressions to Slice/Dice
+          x-ms-visibility: important
+        x-ms-summary: oData Filter Expressions to Slice/Dice
+        x-ms-visibility: important
+      - name: $top
+        in: query
+        description: Limit to return latest x events
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          x-ms-summary: Return x top events
+          x-ms-visibility: important
+        x-ms-summary: Return x top events
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tapeReaderResponse'
+          x-ms-summary: Query Result of Events Found
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    post:
+      tags:
+      - Journey
+      summary: Post Events
+      description: |-
+        API accepts events that describe what occurred, when, and by whom on every interaction across touch points and applications. Data Ingestion is based on Cloud Events specification for describing event data in a common way. API accepts data in the form of POST with support for Header based authorization.
+
+        SAS Token Requirements:
+         - ss=ds
+         - sp=w
+      operationId: PostEvents
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      requestBody:
+        content:
+          application/cloudevents+json:
+            schema:
+              $ref: '#/components/schemas/cloudEvent'
+        required: true
+      responses:
+        "202":
+          description: Accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Accepted for processing
+        "400":
+          description: Request Body is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Request Body is invalid
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-codegen-request-body-name: body
+      x-swagger-router-controller: Journey
+  /v1/journey/streams:
+    get:
+      tags:
+      - Journey
+      summary: Read Streams
+      description: |-
+        Real-time streaming enables API consumers to listen for events as it arrives part of the Journey, these may be transformed, value added / enriched and ready to be consumed or forwarded to an another destination. Optionally accepts $filter to slice/dice further (ex: type eq 'Add to Cart').
+
+        SAS Token Requirements:
+         - ss=stream
+         - sp=r
+      operationId: ReadStreams
+      parameters:
+      - name: sig
+        in: query
+        description: Optional SAS Signature within QueryString
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Optional SAS Signature within QueryString
+          x-ms-visibility: important
+        x-ms-summary: Optional SAS Signature within QueryString
+        x-ms-visibility: important
+      - name: Authorization
+        in: header
+        description: Optional SAS Signature within Header
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Optional SAS Signature within Header
+          x-ms-visibility: important
+        x-ms-summary: Optional SAS Signature within Header
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                x-content-type: text/event-stream
+            application/json:
+              schema:
+                type: string
+          x-ms-summary: Server Sent Events (SSE) Stream
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content: {}
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "403":
+          description: SAS Token is invalid
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/streams/{person}:
+    get:
+      tags:
+      - Journey
+      summary: Read Streams by Person
+      description: |-
+        Real-time streaming enables API consumers to listen for events as it arrives part of the Journey, these may be transformed, value added / enriched and ready to be consumed or forwarded to an another destination. Optionally accepts $filter to slice/dice further (ex: type eq 'Add to Cart').
+
+        SAS Token Requirements:
+         - ss=stream
+         - sp=r
+      operationId: ReadStreamsByPerson
+      parameters:
+      - name: sig
+        in: query
+        description: Optional SAS Signature within QueryString
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Optional SAS Signature within QueryString
+          x-ms-visibility: important
+        x-ms-summary: Optional SAS Signature within QueryString
+        x-ms-visibility: important
+      - name: Authorization
+        in: header
+        description: Optional SAS Signature within Header
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Optional SAS Signature within Header
+          x-ms-visibility: important
+        x-ms-summary: Optional SAS Signature within Header
+        x-ms-visibility: important
+      - name: person
+        in: path
+        description: Unique Person ID to filter by
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Person ID to filter by
+          x-ms-visibility: important
+        x-ms-summary: Person ID to filter by
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                x-content-type: text/event-stream
+            application/json:
+              schema:
+                type: string
+          x-ms-summary: Server Sent Events (SSE) Stream
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content: {}
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "403":
+          description: SAS Token is invalid
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/actions:
+    get:
+      tags:
+      - Journey
+      summary: Get all Journey Actions.
+      description: "Get all Journey Actions. \n\nSAS Token Requirements:\n - ss=action\n\
+        \ - sp=r"
+      operationId: GetJourneyActionList
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: templateId
+        in: query
+        description: Identifies a template.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: templateId
+          x-ms-visibility: important
+        x-ms-summary: templateId
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericListObjectResponse_journeyAction'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "404":
+          description: Indicates that no Journey Action with the provided id was found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    post:
+      tags:
+      - Journey
+      summary: Create/Replace Journey Action.
+      description: "Create/Replace Journey Action. \n\nSAS Token Requirements:\n -\
+        \ ss=action\n - sp=w"
+      operationId: CreateJourneyAction
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/journeyAction'
+        required: true
+      responses:
+        "201":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Returns True/False, indicating success/failure of the operation.
+        "400":
+          description: Journey Action was not created due to bad request format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Journey Action was not created due to bad request format.
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "422":
+          description: Error occured while creating Journey Action due to invalid
+            parameters passed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Error occured while creating Journey Action due to invalid
+            parameters passed.
+        "500":
+          description: Internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Internal error occurred
+      x-ms-visibility: important
+      x-codegen-request-body-name: body
+      x-swagger-router-controller: Journey
+  /v1/journey/actions/{id}:
+    get:
+      tags:
+      - Journey
+      summary: Get specific Journey Action.
+      description: "Get specific Journey Action. \n\nSAS Token Requirements:\n - ss=action\n\
+        \ - sp=r"
+      operationId: GetJourneyAction
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Identifies a specific Journey Action.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: id
+          x-ms-visibility: important
+        x-ms-summary: id
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericObjectResponse_journeyAction'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "404":
+          description: Indicates that no Journey Action with the provided id was found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    delete:
+      tags:
+      - Journey
+      summary: Soft delete Journey Action.
+      description: "Soft delete Journey Action. \n\nSAS Token Requirements:\n - ss=action\n\
+        \ - sp=w"
+      operationId: DeleteJourneyAction
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Identifies a specific Journey Action.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Journey Action Id
+          x-ms-visibility: important
+        x-ms-summary: Journey Action Id
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Returns True/False, indicating success/failure of the operation.
+        "400":
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid Request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "500":
+          description: Internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Internal error occurred
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/views/templates:
+    get:
+      tags:
+      - Journey
+      summary: Get Profile View Templates
+      description: |-
+        Get all/specific Profile View Templates, available for usage by the CJaaS Org and Organization.
+
+        SAS Token Requirements:
+         - ss=profile
+         - sp=r
+      operationId: GetProfileViewTemplates
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: Id
+        in: query
+        description: identifies a specific Profile View Template, available for usage
+          by the CJaaS Org and Organization.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Template Name
+          x-ms-visibility: important
+        x-ms-summary: Template Name
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericListObjectResponse_profileViewTemplate'
+        "400":
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "404":
+          description: Indicates that no template with the provided Id was found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    post:
+      tags:
+      - Journey
+      summary: Create Profile View Template
+      description: "Create Profile View Template. \n\nSAS Token Requirements:\n -\
+        \ ss=profile\n - sp=w"
+      operationId: CreateProfileViewTemplate
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/profileViewTemplateCreateModel'
+        required: true
+      responses:
+        "201":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Returns True/False, indicating success/failure of the operation.
+        "400":
+          description: Profile view was not created due to bad request format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Profile view was not created due to bad request format.
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "422":
+          description: Error occured while creating profile view, due to invalid parameters
+            passed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Error occured while creating profile view, due to invalid
+            parameters passed.
+        "500":
+          description: Internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Internal error occurred
+      x-ms-visibility: important
+      x-codegen-request-body-name: body
+      x-swagger-router-controller: Journey
+    delete:
+      tags:
+      - Journey
+      summary: Delete Profile View Template
+      description: "Delete Profile View Template. \n\nSAS Token Requirements:\n -\
+        \ ss=profile\n - sp=w"
+      operationId: DeleteProfileViewTemplate
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: Id
+        in: query
+        description: Identifies a specific Profile View Template, available for usage
+          by the CJaaS Org and Organization.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Template Name
+          x-ms-visibility: important
+        x-ms-summary: Template Name
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Returns True/False, indicating success/failure of the operation.
+        "400":
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Invalid Request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+        "500":
+          description: Internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Internal error occurred
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/views:
+    get:
+      tags:
+      - Journey
+      summary: Get the status of a Progressive Profile View Job.
+      description: |-
+        Get the status of a Progressive Profile View Job.
+
+        SAS Token Requirements:
+         - ss=profile
+         - p=r
+      operationId: GetViewStatus
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: ViewId
+        in: query
+        description: identifies a specific Profile View Template, available for usage
+          by the CJaaS Org and Organization.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Template Name
+          x-ms-visibility: important
+        x-ms-summary: Template Name
+        x-ms-visibility: important
+      - name: PersonId
+        in: query
+        description: identifies the Person, for which the Profile View needs to be
+          created.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Person Identifier
+          x-ms-visibility: important
+        x-ms-summary: Person Identifier
+        x-ms-visibility: important
+      - name: SearchFilter
+        in: query
+        description: 'OData Filter expressions that will be used to search tapes.
+          Example: type eq ''Add To Cart'''
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: OData Filter expressions that will be used to search tapes.
+          x-ms-visibility: important
+        x-ms-summary: OData Filter expressions that will be used to search tapes.
+        x-ms-visibility: important
+      - name: instanceId
+        in: query
+        description: Identifies the instance of the job.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Identifies the instance of the job.
+          x-ms-visibility: important
+        x-ms-summary: Identifies the instance of the job.
+        x-ms-visibility: important
+      responses:
+        "302":
+          description: The OK response.
+          content: {}
+        "400":
+          description: Indicates that request could not be processed due to bad request
+            parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+        "401":
+          description: Unauthorized Operation
+          content: {}
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    post:
+      tags:
+      - Journey
+      summary: Starts job to generate Progressive Profile View for a person.
+      description: "Starts job to generate Progressive Profile View for a person.\
+        \ The HTTP response is intended to be compatible with the Polling Consumer\
+        \ Pattern. \n\nSAS Token Requirements:\n - ss=profile\n - p=w"
+      operationId: CreateView
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: ViewId
+        in: query
+        description: identifies a specific Profile View Template, available for usage
+          by the CJaaS Org and Organization.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Template Name
+          x-ms-visibility: important
+        x-ms-summary: Template Name
+        x-ms-visibility: important
+      - name: PersonId
+        in: query
+        description: identifies the Person, for which the Profile View needs to be
+          created.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Person Identifier
+          x-ms-visibility: important
+        x-ms-summary: Person Identifier
+        x-ms-visibility: important
+      - name: SearchFilter
+        in: query
+        description: 'OData Filter expressions that will be used to search tapes.
+          Example: type eq ''Add To Cart'''
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: OData Filter expressions that will be used to search tapes.
+          x-ms-visibility: important
+        x-ms-summary: OData Filter expressions that will be used to search tapes.
+        x-ms-visibility: important
+      - name: SkipCache
+        in: query
+        description: 'If set to true, will indicate to not return any existing cached
+          Profile View (default: false)'
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+          x-ms-summary: Option to ignore any existing cached Profile View
+          x-ms-visibility: important
+        x-ms-summary: Option to ignore any existing cached Profile View
+        x-ms-visibility: important
+      - name: X-CACHE-MAXAGE-HOUR
+        in: header
+        description: Controls the maximum age (in hours) of an existing cached view,
+          that the API can return for this request. Default (0)
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+          x-ms-summary: Controls the maximum age (in hours) of an existing cached
+            view, that the API can return for this request. Default (0)
+          x-ms-visibility: advanced
+        x-ms-summary: Controls the maximum age (in hours) of an existing cached view,
+          that the API can return for this request. Default (0)
+        x-ms-visibility: advanced
+      - name: X-CACHE-MAXAGE-MIN
+        in: header
+        description: Controls the maximum age (in hours) of an existing cached view,
+          that the API can return for this request. Default (15)
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int32
+          x-ms-summary: Controls the maximum age (in minutes) of an existing cached
+            view, that the API can return for this request. Default (15)
+          x-ms-visibility: advanced
+        x-ms-summary: Controls the maximum age (in minutes) of an existing cached
+          view, that the API can return for this request. Default (15)
+        x-ms-visibility: advanced
+      responses:
+        "200":
+          description: The OK response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createProgressiveProfileViewJobResponseModel'
+        "400":
+          description: Indicates that request could not be processed due to bad request
+            parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+        "401":
+          description: Unauthorized Operation
+          content: {}
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/profileview:
+    post:
+      tags:
+      - Journey
+      summary: A Profile is a bespoke view of a customer's journey.
+      description: "The profile view is created based on a view template that is provided\
+        \ as input.  \r\n**Sample request**: *GET /v1/journey/profileview?customer=123XX*\
+        \  \r\n{  \r\n&nbsp;&nbsp;&nbsp;&nbsp;\"Name\": \"Test Template 2\",  \r\n\
+        &nbsp;&nbsp;&nbsp;&nbsp;\"DatapointCount\": 7,  \r\n&nbsp;&nbsp;&nbsp;&nbsp;\"\
+        Attributes\": [{  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"Version\"\
+        : \"0.1\",  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"Event\"\
+        : \"Add to Cart\",  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"\
+        Metadata\": \"sku\",  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"\
+        Limit\": 3,  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"DisplayName\"\
+        : \"Items added\",  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"\
+        Verbose\": false,  \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\"\
+        AggregationMode\": \"Value\"  \r\n&nbsp;&nbsp;&nbsp;&nbsp;}]  \r\n}."
+      operationId: ProfileBuilder
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: PersonId
+        in: query
+        description: Identifies the person for whom the profile view is requested.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: Person ID
+          x-ms-visibility: important
+        x-ms-summary: Person ID
+        x-ms-visibility: important
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/profileViewBuilderTemplate'
+        required: true
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/profileViewQueryResponse'
+          x-ms-summary: Query Result of Events Found
+        "400":
+          description: Error occured while building profile view with the requested
+            template parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object'
+          x-ms-summary: Error occured while building profile view with the requested
+            template parameters
+        "404":
+          description: No matching events were found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/object'
+          x-ms-summary: Empty view as no no matching events were found
+      x-ms-visibility: important
+      x-codegen-request-body-name: body
+      x-swagger-router-controller: Journey
+  /v1/journey/events/{identity}:
+    get:
+      tags:
+      - Journey
+      summary: Read Events By Identity
+      description: |-
+        The Tape holds running stream of customer journey events that arrive onto Data Sink from all channels - across mediums. Tape is a append-only, immutable data ledger that can be queried to retrieve snapshot of latest events that moment in time or historically to play-back events as they occurred to understand or analyze Journeys using ML/AI models.
+
+        SAS Token Requirements:
+         - ss=tape
+         - sp=r
+      operationId: ReadEventsByIdentity
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: identity
+        in: path
+        description: Unique Identity to filter by
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Identity to filter by
+          x-ms-visibility: important
+        x-ms-summary: Identity to filter by
+        x-ms-visibility: important
+      - name: $filter
+        in: query
+        description: 'oData Filter Expressions to Slice/Dice Search, ex: type eq ''Add
+          To Cart'''
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          x-ms-summary: oData Filter Expressions to Slice/Dice
+          x-ms-visibility: important
+        x-ms-summary: oData Filter Expressions to Slice/Dice
+        x-ms-visibility: important
+      - name: $top
+        in: query
+        description: Limit to return latest x events
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          format: int32
+          x-ms-summary: Return x top events
+          x-ms-visibility: important
+        x-ms-summary: Return x top events
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/tapeReaderResponse'
+          x-ms-summary: Query Result of Events Found
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+components:
+  schemas:
+    action:
+      type: object
+      properties:
+        actionType:
+          type: integer
+          description: Action Type
+          format: int32
+          enum:
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          default: 1
+        actionConfig:
+          $ref: '#/components/schemas/actionConfig'
+      example:
+        actionType: 0
+        actionConfig: {}
+    actionConfig:
+      type: object
+      description: Action Config
+    cloudEvent:
+      type: object
+      properties:
+        specVersion:
+          type: string
+          description: The Spec Version for this event.
+        source:
+          type: string
+          description: what is the source of this event.
+        id:
+          type: string
+          description: source generated GUID that uniquely identifies this event.
+          format: uuid
+        person:
+          type: string
+          description: User ID for the person to whose journey this event will be
+            linked to.
+        previously:
+          type: string
+          description: if any other user id was used in the previous context. this
+            will serve as alias going forward.
+        type:
+          type: string
+          description: type of event.
+        data:
+          type: string
+          description: Embedded JSON string. Could contain any valid JSON document.
+        dataContentType:
+          type: string
+          description: Content Type of Data.
+        time:
+          type: string
+          description: timestamp at source system at time of publishing.
+          format: date-time
+    createProgressiveProfileViewJobResponseModel:
+      type: object
+      properties:
+        id:
+          type: string
+        getUriStatusQuery:
+          type: string
+      example:
+        getUriStatusQuery: getUriStatusQuery
+        id: id
+    dataMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: message
+    errorObject:
+      type: object
+      properties:
+        key:
+          type: integer
+          format: int32
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/messageObject'
+    httpErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/errorObject'
+        trackingId:
+          type: string
+    httpGenericListObjectResponse_journeyAction:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/journeyAction'
+      example:
+        data:
+        - organization: organization
+          name: name
+          namespace: namespace
+          active: true
+          rules: {}
+          templateId: templateId
+          version: version
+          actions:
+          - actionType: 0
+            actionConfig: {}
+          - actionType: 0
+            actionConfig: {}
+        - organization: organization
+          name: name
+          namespace: namespace
+          active: true
+          rules: {}
+          templateId: templateId
+          version: version
+          actions:
+          - actionType: 0
+            actionConfig: {}
+          - actionType: 0
+            actionConfig: {}
+        meta:
+          orgId: orgId
+    httpGenericListObjectResponse_profileViewTemplate:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/profileViewTemplate'
+      example:
+        data:
+        - organization: organization
+          name: name
+          namespace: namespace
+          attributes:
+          - metadata: metadata
+            displayName: displayName
+            lookbackPeriod: 6
+            limit: 0
+            event: event
+            version: version
+            lookbackDurationType: lookbackDurationType
+            aggregationMode: aggregationMode
+            verbose: true
+          - metadata: metadata
+            displayName: displayName
+            lookbackPeriod: 6
+            limit: 0
+            event: event
+            version: version
+            lookbackDurationType: lookbackDurationType
+            aggregationMode: aggregationMode
+            verbose: true
+        - organization: organization
+          name: name
+          namespace: namespace
+          attributes:
+          - metadata: metadata
+            displayName: displayName
+            lookbackPeriod: 6
+            limit: 0
+            event: event
+            version: version
+            lookbackDurationType: lookbackDurationType
+            aggregationMode: aggregationMode
+            verbose: true
+          - metadata: metadata
+            displayName: displayName
+            lookbackPeriod: 6
+            limit: 0
+            event: event
+            version: version
+            lookbackDurationType: lookbackDurationType
+            aggregationMode: aggregationMode
+            verbose: true
+        meta:
+          orgId: orgId
+    httpGenericObjectResponse_journeyAction:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          $ref: '#/components/schemas/journeyAction'
+      example:
+        data:
+          organization: organization
+          name: name
+          namespace: namespace
+          active: true
+          rules: {}
+          templateId: templateId
+          version: version
+          actions:
+          - actionType: 0
+            actionConfig: {}
+          - actionType: 0
+            actionConfig: {}
+        meta:
+          orgId: orgId
+    httpReport:
+      type: object
+      properties:
+        name:
+          type: string
+        data:
+          $ref: '#/components/schemas/object'
+      example:
+        data: {}
+        name: name
+    httpReportObjectResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        report:
+          $ref: '#/components/schemas/httpReport'
+      example:
+        meta:
+          orgId: orgId
+        report:
+          data: {}
+          name: name
+    httpResponseMeta:
+      type: object
+      properties:
+        orgId:
+          type: string
+      example:
+        orgId: orgId
+    httpSimpleMessageObjectResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          $ref: '#/components/schemas/dataMessage'
+      example:
+        data:
+          message: message
+        meta:
+          orgId: orgId
+    journeyAction:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name
+        organization:
+          type: string
+          description: Organization
+        namespace:
+          type: string
+          description: Namespace
+        version:
+          type: string
+          description: Version
+        active:
+          type: boolean
+          description: Active
+        templateId:
+          type: string
+          description: Template Id
+        rules:
+          type: object
+          properties: {}
+          description: Rules
+          example: {}
+        actions:
+          type: array
+          description: List of actions
+          items:
+            $ref: '#/components/schemas/action'
+      example:
+        organization: organization
+        name: name
+        namespace: namespace
+        active: true
+        rules: {}
+        templateId: templateId
+        version: version
+        actions:
+        - actionType: 0
+          actionConfig: {}
+        - actionType: 0
+          actionConfig: {}
+    messageObject:
+      type: object
+      properties:
+        description:
+          type: string
+    modifiedCloudEvent:
+      type: object
+      properties:
+        data:
+          type: object
+          properties: {}
+          example: {}
+        dataContentType:
+          type: string
+        id:
+          type: string
+          format: uuid
+        person:
+          type: string
+        previously:
+          type: string
+        source:
+          type: string
+        specVersion:
+          type: string
+        time:
+          type: string
+          format: date-time
+        type:
+          type: string
+      example:
+        specVersion: specVersion
+        data: {}
+        previously: previously
+        person: person
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        source: source
+        time: 2000-01-23T04:56:07.000+00:00
+        dataContentType: dataContentType
+        type: type
+    object:
+      type: object
+    profileAttributeView:
+      type: object
+      properties:
+        queryTemplate:
+          $ref: '#/components/schemas/profileViewBuilderTemplateAttribute'
+        result:
+          type: string
+        journeyEvents:
+          type: string
+      example:
+        result: result
+        queryTemplate:
+          metadata: metadata
+          displayName: displayName
+          limit: 0
+          event: event
+          version: version
+          aggregationMode: aggregationMode
+          verbose: true
+        journeyEvents: journeyEvents
+    profileViewBuilderTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the view to be built.
+        datapointCount:
+          type: integer
+          description: Number of Journey events to be considered, in order to build
+            the view.
+          format: int32
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/profileViewBuilderTemplateAttribute'
+    profileViewBuilderTemplateAttribute:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Attribute version. Depending on version the evaluation procedure
+            might change.
+        event:
+          type: string
+          description: The Tape Event to search for.
+        metadata:
+          type: string
+          description: The specific metadata of the Tape Event, that needs to be evaluated.
+        limit:
+          type: integer
+          description: This will limit the number of matching tape events that are
+            used, for building the view.
+          format: int32
+        displayName:
+          type: string
+          description: Post evaluation the result to be generated using this display
+            name.
+        aggregationMode:
+          type: string
+          description: 'Indicates how the matching events will be aggregated. "Value":
+            All the metadata will be concatenated in a comma-separated string."Count":
+            We will evaluate the count of occurrences of the event metadata in the
+            specified time period."Sum": We will attempt to parse the metadata as
+            integer and add the values."Max", "Average", "Min": The metadata will
+            be parsed as integer and then Max/Avg/Min of the values will be calculated
+            respectively."Distinct": We will select only the unique items from the
+            metadata. '
+        verbose:
+          type: boolean
+          description: If set to true, indicates that the matching Journey Events
+            to be included in the response as well.
+      example:
+        metadata: metadata
+        displayName: displayName
+        limit: 0
+        event: event
+        version: version
+        aggregationMode: aggregationMode
+        verbose: true
+    profileViewQueryResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        customerId:
+          type: string
+        generatedAt:
+          type: string
+          format: date-time
+        attributeView:
+          type: array
+          items:
+            $ref: '#/components/schemas/profileAttributeView'
+      example:
+        attributeView:
+        - result: result
+          queryTemplate:
+            metadata: metadata
+            displayName: displayName
+            limit: 0
+            event: event
+            version: version
+            aggregationMode: aggregationMode
+            verbose: true
+          journeyEvents: journeyEvents
+        - result: result
+          queryTemplate:
+            metadata: metadata
+            displayName: displayName
+            limit: 0
+            event: event
+            version: version
+            aggregationMode: aggregationMode
+            verbose: true
+          journeyEvents: journeyEvents
+        name: name
+        customerId: customerId
+        generatedAt: 2000-01-23T04:56:07.000+00:00
+    profileViewTemplate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the view to be built.
+        namespace:
+          type: string
+          description: CJaaS Namespace to which this template belongs.
+        organization:
+          type: string
+          description: CJaaS Organization to which this template belongs.
+        attributes:
+          type: array
+          description: List of attributes to build the view.
+          items:
+            $ref: '#/components/schemas/profileViewTemplateAttribute'
+      example:
+        organization: organization
+        name: name
+        namespace: namespace
+        attributes:
+        - metadata: metadata
+          displayName: displayName
+          lookbackPeriod: 6
+          limit: 0
+          event: event
+          version: version
+          lookbackDurationType: lookbackDurationType
+          aggregationMode: aggregationMode
+          verbose: true
+        - metadata: metadata
+          displayName: displayName
+          lookbackPeriod: 6
+          limit: 0
+          event: event
+          version: version
+          lookbackDurationType: lookbackDurationType
+          aggregationMode: aggregationMode
+          verbose: true
+    profileViewTemplateAttribute:
+      type: object
+      properties:
+        version:
+          type: string
+          description: Attribute version. Depending on version the evaluation procedure
+            might change.
+        event:
+          type: string
+          description: The Tape Event to search for.
+        metadata:
+          type: string
+          description: The specific metadata of the Tape Event, that needs to be evaluated.
+        limit:
+          type: integer
+          description: This will limit the number of matching tape events that are
+            used, for building the view.
+          format: int32
+        displayName:
+          type: string
+          description: Post evaluation the result to be generated using this display
+            name.
+        lookbackDurationType:
+          type: string
+          description: 'One of the following: "minutes", "hours", "days" or "none"'
+        lookbackPeriod:
+          type: integer
+          description: Number of minutes, hours or days to look back into the past,
+            to search for the matching events in Tape
+          format: int32
+        aggregationMode:
+          type: string
+          description: 'Indicates how the matching events will be aggregated. "Value":
+            All the metadata will be concatenated in a comma-separated string."Count":
+            We will evaluate the count of occurrences of the event metadata in the
+            specified time period."Sum": We will attempt to parse the metadata as
+            integer and add the values."Max", "Average", "Min": The metadata will
+            be parsed as integer and then Max/Avg/Min of the values will be calculated
+            respectively."Distinct": We will select only the unique items from the
+            metadata. '
+        verbose:
+          type: boolean
+          description: If set to true, indicates that the matching Journey Events
+            to be included in the response as well.
+      example:
+        metadata: metadata
+        displayName: displayName
+        lookbackPeriod: 6
+        limit: 0
+        event: event
+        version: version
+        lookbackDurationType: lookbackDurationType
+        aggregationMode: aggregationMode
+        verbose: true
+    profileViewTemplateCreateModel:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier for the view to be built.
+        attributes:
+          type: array
+          description: Attributes to be used for building the profile view.
+          items:
+            $ref: '#/components/schemas/profileViewTemplateAttribute'
+    tapeReaderResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/modifiedCloudEvent'
+      example:
+        meta:
+          orgId: orgId
+        events:
+        - specVersion: specVersion
+          data: {}
+          previously: previously
+          person: person
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          source: source
+          time: 2000-01-23T04:56:07.000+00:00
+          dataContentType: dataContentType
+          type: type
+        - specVersion: specVersion
+          data: {}
+          previously: previously
+          person: person
+          id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          source: source
+          time: 2000-01-23T04:56:07.000+00:00
+          dataContentType: dataContentType
+          type: type
+x-original-swagger-version: "2.0"

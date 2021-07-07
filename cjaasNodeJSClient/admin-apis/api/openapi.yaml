@@ -1,0 +1,789 @@
+openapi: 3.0.1
+info:
+  title: Azure Functions OpenAPI Extension
+  version: 1.0.0
+servers:
+- url: https://cjaas-devus1-admin.azurewebsites.net/
+paths:
+  /v1/organizations/apps:
+    get:
+      tags:
+      - Account
+      summary: List Apps
+      description: Lists Apps for a particular organization.
+      operationId: ListApps
+      parameters:
+      - name: Authorization
+        in: header
+        description: |-
+          Cisco CI Bearer Token
+          Prefix token with 'Bearer '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Bearer
+          x-ms-visibility: important
+        x-ms-summary: Bearer
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericListObjectResponse_appsDocumentSwagger'
+          x-ms-summary: List Apps Result
+        "403":
+          description: Bearer Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Bearer Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Account
+    post:
+      tags:
+      - Account
+      summary: Create App
+      description: Create an application for a particular organization.
+      operationId: CreateApp
+      parameters:
+      - name: Authorization
+        in: header
+        description: |-
+          Common Identity Bearer Token
+          Prefix token with 'Bearer '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Bearer
+          x-ms-visibility: important
+        x-ms-summary: Bearer
+        x-ms-visibility: important
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericObjectResponse_createApp'
+          x-ms-summary: Create App Result
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Bad Request
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: Bearer Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Bearer Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Account
+  /v1/organizations/apps/{appname}:
+    delete:
+      tags:
+      - Account
+      summary: Delete App
+      description: Delete an application from a particular organization.
+      operationId: DeleteApp
+      parameters:
+      - name: Authorization
+        in: header
+        description: |-
+          Cisco CI Bearer Token
+          Prefix token with 'Bearer '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Bearer
+          x-ms-visibility: important
+        x-ms-summary: Bearer
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Delete App Result
+        "400":
+          description: 'Request failed due to nonexistent appname: ''{appName}'''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: 'Request failed due to nonexistent appname: ''{appName}'''
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: Bearer Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Bearer Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Account
+  /v1/organizations/apps/{appname}/key:
+    put:
+      tags:
+      - Account
+      summary: Rotate App Key
+      description: Rotates a secret key for a particular application.
+      operationId: RotateAppKey
+      parameters:
+      - name: Authorization
+        in: header
+        description: |-
+          Cisco CI Bearer Token
+          Prefix token with 'Bearer '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Bearer
+          x-ms-visibility: important
+        x-ms-summary: Bearer
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericObjectResponse_createApp'
+          x-ms-summary: Rotate App Key Result
+        "400":
+          description: Request Body is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Request Body is invalid
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Account
+  /v1/organizations/apps/{appname}/attributes:
+    put:
+      tags:
+      - Account
+      summary: Update App Attributes
+      description: Updates an Apps Attributes
+      operationId: UpdateAppAttributes
+      parameters:
+      - name: Authorization
+        in: header
+        description: Common Identity Bearer Token
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Bearer
+          x-ms-visibility: important
+        x-ms-summary: Bearer
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Update App Attributes
+        "400":
+          description: Request Body is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Request Body is invalid
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Account
+  /v1/journey/identities:
+    get:
+      tags:
+      - Journey
+      summary: List Identities
+      description: |-
+        Journeys are built around a concept of Identity. An Identity shapes how a Journey is connected together. Get all identities.
+
+        SAS Token Requirements:
+         - ss=idmt
+         - sp=r
+      operationId: ListIdentities
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericListObjectResponse_identity'
+          x-ms-summary: Result of Identities Operation
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/identities/{id}:
+    get:
+      tags:
+      - Journey
+      summary: Get Identity By Id
+      description: |-
+        Journeys are built around a concept of Identity. An Identity shapes how a Journey is connected together. Retrieve an Identity of an individual by providing their ID.
+
+        SAS Token Requirements:
+         - ss=idmt
+         - sp=r
+      operationId: GetIdentityById
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Unique Identity ID to retrieve data.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Identity ID
+          x-ms-visibility: important
+        x-ms-summary: Identity ID
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpGenericObjectResponse_identityById'
+          x-ms-summary: Result of Identities Operation
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+    delete:
+      tags:
+      - Journey
+      summary: Delete Identity
+      description: |-
+        Deletes a specific Identity using provided ID.
+
+        SAS Token Requirements:
+         - ss=idmt
+         - sp=w
+      operationId: DeleteIdentity
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Unique Identity ID to retrieve data.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Identity ID
+          x-ms-visibility: important
+        x-ms-summary: Identity ID
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Result of Delete Identity Operation
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+  /v1/journey/identities/{id}/aliases:
+    post:
+      tags:
+      - Journey
+      summary: Create or Update an Alias
+      description: |-
+        Every event in the Journey has an Identity of the originating individual, different channels can have their own unique Identities, API consumers can tie multiple duplicate Identities together to a unique single individual nondestructively (i.e soft merge) without modifying the Tape. Once aliased, all duplicates are treated as a single Identity for any purpose (Query or View).
+
+        SAS Token Requirements:
+         - ss=idmt
+         - sp=w
+      operationId: CreateOrUpdateAnAlias
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Identity identifier to apply action/query upon.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Identity Id to apply action/query upon
+          x-ms-visibility: important
+        x-ms-summary: Identity Id to apply action/query upon
+        x-ms-visibility: important
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/identityAliasesRequestBody'
+        required: true
+      responses:
+        "201":
+          description: Created/Modified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpSimpleMessageObjectResponse'
+          x-ms-summary: Result of Identities Operation
+        "400":
+          description: Request Body is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Request Body is invalid
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-codegen-request-body-name: body
+      x-swagger-router-controller: Journey
+    delete:
+      tags:
+      - Journey
+      summary: Delete Identity Aliases
+      description: |-
+        Delete an Identity's Aliases.
+
+        SAS Token Requirements:
+         - ss=idmt
+         - sp=w
+      operationId: DeleteIdentityAliases
+      parameters:
+      - name: Authorization
+        in: header
+        description: SAS Signature.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: SAS Signature
+          x-ms-visibility: important
+        x-ms-summary: SAS Signature
+        x-ms-visibility: important
+      - name: id
+        in: path
+        description: Unique Identity ID to retrieve data.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          x-ms-summary: Identity ID
+          x-ms-visibility: important
+        x-ms-summary: Identity ID
+        x-ms-visibility: important
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: string
+                x-content-type: application/json
+          x-ms-summary: Result of Identities Operation
+        "400":
+          description: Attempted request has invalid path/query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: Attempted request has invalid path/query parameters
+        "401":
+          description: Unauthorized Operation
+          content: {}
+        "403":
+          description: SAS Token is invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/httpErrorResponse'
+          x-ms-summary: SAS Token is invalid
+      x-ms-visibility: important
+      x-swagger-router-controller: Journey
+components:
+  schemas:
+    appsDocumentSwagger:
+      type: object
+      properties:
+        id:
+          type: string
+        organization:
+          type: string
+        namespace:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        creationDate:
+          type: string
+        modifiedDate:
+          type: string
+        expiration:
+          type: string
+      example:
+        organization: organization
+        namespace: namespace
+        name: name
+        modifiedDate: modifiedDate
+        description: description
+        expiration: expiration
+        id: id
+        creationDate: creationDate
+    createApp:
+      type: object
+      properties:
+        secretkey:
+          type: string
+        namespace:
+          type: string
+        expiration:
+          type: string
+          format: date-time
+      example:
+        secretkey: secretkey
+        namespace: namespace
+        expiration: 2000-01-23T04:56:07.000+00:00
+    dataMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: message
+    errorObject:
+      type: object
+      properties:
+        key:
+          type: integer
+          format: int32
+        message:
+          type: array
+          items:
+            $ref: '#/components/schemas/messageObject'
+    httpErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/errorObject'
+        trackingId:
+          type: string
+    httpGenericListObjectResponse_appsDocumentSwagger:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/appsDocumentSwagger'
+      example:
+        data:
+        - organization: organization
+          namespace: namespace
+          name: name
+          modifiedDate: modifiedDate
+          description: description
+          expiration: expiration
+          id: id
+          creationDate: creationDate
+        - organization: organization
+          namespace: namespace
+          name: name
+          modifiedDate: modifiedDate
+          description: description
+          expiration: expiration
+          id: id
+          creationDate: creationDate
+        meta:
+          orgId: orgId
+    httpGenericListObjectResponse_identity:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/identity'
+      example:
+        data:
+        - aliases:
+          - aliases
+          - aliases
+          organization: organization
+          namespace: namespace
+          personId: personId
+          id: id
+        - aliases:
+          - aliases
+          - aliases
+          organization: organization
+          namespace: namespace
+          personId: personId
+          id: id
+        meta:
+          orgId: orgId
+    httpGenericObjectResponse_createApp:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          $ref: '#/components/schemas/createApp'
+      example:
+        data:
+          secretkey: secretkey
+          namespace: namespace
+          expiration: 2000-01-23T04:56:07.000+00:00
+        meta:
+          orgId: orgId
+    httpGenericObjectResponse_identityById:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          $ref: '#/components/schemas/identityById'
+      example:
+        data:
+          aliases:
+          - aliases
+          - aliases
+          lastSeen: {}
+          organization: organization
+          namespace: namespace
+          personId: personId
+          id: id
+        meta:
+          orgId: orgId
+    httpResponseMeta:
+      type: object
+      properties:
+        orgId:
+          type: string
+      example:
+        orgId: orgId
+    httpSimpleMessageObjectResponse:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/httpResponseMeta'
+        data:
+          $ref: '#/components/schemas/dataMessage'
+      example:
+        data:
+          message: message
+        meta:
+          orgId: orgId
+    identity:
+      type: object
+      properties:
+        id:
+          type: string
+        organization:
+          type: string
+        namespace:
+          type: string
+        personId:
+          type: string
+        aliases:
+          type: array
+          items:
+            type: string
+      example:
+        aliases:
+        - aliases
+        - aliases
+        organization: organization
+        namespace: namespace
+        personId: personId
+        id: id
+    identityAliasesRequestBody:
+      type: object
+      properties:
+        aliases:
+          type: array
+          description: List of Aliases value to associate an identity with. This identity's
+            events can be looked up with any of the given aliases. It is a override
+            operation. Existing set of aliases will be overridden with the new set.
+          items:
+            type: string
+    identityById:
+      type: object
+      properties:
+        id:
+          type: string
+        organization:
+          type: string
+        namespace:
+          type: string
+        personId:
+          type: string
+        aliases:
+          type: array
+          items:
+            type: string
+        lastSeen:
+          type: object
+          properties: {}
+          example: {}
+      example:
+        aliases:
+        - aliases
+        - aliases
+        lastSeen: {}
+        organization: organization
+        namespace: namespace
+        personId: personId
+        id: id
+    messageObject:
+      type: object
+      properties:
+        description:
+          type: string
+x-original-swagger-version: "2.0"
