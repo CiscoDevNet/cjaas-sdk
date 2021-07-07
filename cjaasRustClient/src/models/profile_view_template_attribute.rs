@@ -12,7 +12,7 @@
 
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct ProfileViewBuilderTemplateAttribute {
+pub struct ProfileViewTemplateAttribute {
     /// Attribute version. Depending on version the evaluation procedure might change.
     #[serde(rename = "version", skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -28,6 +28,12 @@ pub struct ProfileViewBuilderTemplateAttribute {
     /// Post evaluation the result to be generated using this display name.
     #[serde(rename = "displayName", skip_serializing_if = "Option::is_none")]
     pub display_name: Option<String>,
+    /// One of the following: \"minutes\", \"hours\", \"days\" or \"none\"
+    #[serde(rename = "lookbackDurationType", skip_serializing_if = "Option::is_none")]
+    pub lookback_duration_type: Option<String>,
+    /// Number of minutes, hours or days to look back into the past, to search for the matching events in Tape
+    #[serde(rename = "lookbackPeriod", skip_serializing_if = "Option::is_none")]
+    pub lookback_period: Option<i32>,
     /// Indicates how the matching events will be aggregated. \"Value\": All the metadata will be concatenated in a comma-separated string.\"Count\": We will evaluate the count of occurrences of the event metadata in the specified time period.\"Sum\": We will attempt to parse the metadata as integer and add the values.\"Max\", \"Average\", \"Min\": The metadata will be parsed as integer and then Max/Avg/Min of the values will be calculated respectively.\"Distinct\": We will select only the unique items from the metadata. 
     #[serde(rename = "aggregationMode", skip_serializing_if = "Option::is_none")]
     pub aggregation_mode: Option<String>,
@@ -36,14 +42,16 @@ pub struct ProfileViewBuilderTemplateAttribute {
     pub verbose: Option<bool>,
 }
 
-impl ProfileViewBuilderTemplateAttribute {
-    pub fn new() -> ProfileViewBuilderTemplateAttribute {
-        ProfileViewBuilderTemplateAttribute {
+impl ProfileViewTemplateAttribute {
+    pub fn new() -> ProfileViewTemplateAttribute {
+        ProfileViewTemplateAttribute {
             version: None,
             event: None,
             metadata: None,
             limit: None,
             display_name: None,
+            lookback_duration_type: None,
+            lookback_period: None,
             aggregation_mode: None,
             verbose: None,
         }
