@@ -51,7 +51,7 @@ import io.swagger.client.auth.OAuth;
 
 public class ApiClient {
 
-    private String basePath = "https://uswest-nonprod.cjaas.cisco.com/";
+    private String basePath = "https://trycjaas.azurewebsites.net/";
     private boolean debugging = false;
     private Map<String, String> defaultHeaderMap = new HashMap<String, String>();
     private String tempFolderPath = null;
@@ -105,7 +105,7 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g https://uswest-nonprod.cjaas.cisco.com/
+     * @param basePath Base path of the URL (e.g https://trycjaas.azurewebsites.net/
      * @return An instance of OkHttpClient
      */
     public ApiClient setBasePath(String basePath) {
@@ -958,7 +958,7 @@ public class ApiClient {
      * @param formParams The form parameters
      * @param authNames The authentications to apply
      * @param progressRequestListener Progress request listener
-     * @return The HTTP request
+     * @return The HTTP request 
      * @throws ApiException If fail to serialize the request body object
      */
     public Request buildRequest(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, Object> formParams, String[] authNames, ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {

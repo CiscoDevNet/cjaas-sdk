@@ -24,7 +24,7 @@ pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git
 
 Then import the package:
 ```python
-import swagger_client
+import swagger_client 
 ```
 
 ### Setuptools
@@ -77,7 +77,7 @@ except ApiException as e:
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi(swagger_client.ApiClient(configuration))
-body = swagger_client.CloudEvent() # CloudEvent |
+body = swagger_client.CloudEvent() # CloudEvent | 
 authorization = 'authorization_example' # str | SAS Signature
 
 try:
@@ -199,7 +199,7 @@ except ApiException as e:
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi(swagger_client.ApiClient(configuration))
-body = swagger_client.OnlineOrchestration() # OnlineOrchestration |
+body = swagger_client.OnlineOrchestration() # OnlineOrchestration | 
 person = 'person_example' # str | Unique Person ID to filter by
 authorization = 'authorization_example' # str | Optional SAS Signature within Header (optional)
 sig = 'sig_example' # str | Optional SAS Signature within QueryString (optional)
@@ -213,7 +213,7 @@ except ApiException as e:
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi(swagger_client.ApiClient(configuration))
-body = swagger_client.ProfileViewBuilderTemplate() # ProfileViewBuilderTemplate |
+body = swagger_client.ProfileViewBuilderTemplate() # ProfileViewBuilderTemplate | 
 authorization = 'authorization_example' # str | SAS Signature
 person_id = 'person_id_example' # str | Identifies the person for whom the profile view is requested
 
@@ -262,7 +262,7 @@ except ApiException as e:
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi(swagger_client.ApiClient(configuration))
-body = swagger_client.AccountSettings() # AccountSettings |
+body = swagger_client.AccountSettings() # AccountSettings | 
 authorization = 'authorization_example' # str | SAS Signature
 
 try:
@@ -288,7 +288,7 @@ except ApiException as e:
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://uswest-nonprod.cjaas.cisco.com/*
+All URIs are relative to *https://trycjaas.azurewebsites.net/*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

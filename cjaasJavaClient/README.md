@@ -83,7 +83,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         try {
@@ -106,7 +106,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String person = "person_example"; // String | Unique Person ID to filter by
@@ -130,9 +130,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
-        CloudEvent body = new CloudEvent(); // CloudEvent |
+        CloudEvent body = new CloudEvent(); // CloudEvent | 
         String authorization = "authorization_example"; // String | SAS Signature
         try {
             apiInstance.dataSink(body, authorization);
@@ -153,7 +153,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String sig = "sig_example"; // String | SAS Signature within QueryString
         String data = "data_example"; // String | CloudEvent Serialized as Base64 UTF8 String
@@ -176,7 +176,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String id = "id_example"; // String | Unique Person ID to clear data
@@ -200,7 +200,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String id = "id_example"; // String | Unique Person ID to apply action/query upon
@@ -225,7 +225,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String id = "id_example"; // String | Unique Person ID to clear data
@@ -249,7 +249,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String $filter = "$filter_example"; // String | oData Filter Expressions to Slice/Dice Search, ex: type eq 'Add To Cart'
@@ -274,7 +274,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String person = "person_example"; // String | Unique Person ID to filter by
@@ -300,7 +300,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String operation = "operation_example"; // String | Key Operation Type: list or create or rotate
@@ -325,7 +325,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         String id = "id_example"; // String | Unique Key name to delete
@@ -349,7 +349,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         try {
@@ -372,9 +372,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
-        OnlineOrchestration body = new OnlineOrchestration(); // OnlineOrchestration |
+        OnlineOrchestration body = new OnlineOrchestration(); // OnlineOrchestration | 
         String person = "person_example"; // String | Unique Person ID to filter by
         String sig = "sig_example"; // String | Optional SAS Signature within QueryString
         String authorization = "authorization_example"; // String | Optional SAS Signature within Header
@@ -398,9 +398,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
-        ProfileViewBuilderTemplate body = new ProfileViewBuilderTemplate(); // ProfileViewBuilderTemplate |
+        ProfileViewBuilderTemplate body = new ProfileViewBuilderTemplate(); // ProfileViewBuilderTemplate | 
         String authorization = "authorization_example"; // String | SAS Signature
         String personId = "personId_example"; // String | Identifies the person for whom the profile view is requested
         try {
@@ -423,7 +423,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String sig = "sig_example"; // String | Optional SAS Signature within QueryString
         String authorization = "authorization_example"; // String | Optional SAS Signature within Header
@@ -447,7 +447,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String person = "person_example"; // String | Unique Person ID to filter by
         String sig = "sig_example"; // String | Optional SAS Signature within QueryString
@@ -472,7 +472,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String authorization = "authorization_example"; // String | SAS Signature
         try {
@@ -495,9 +495,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
-        AccountSettings body = new AccountSettings(); // AccountSettings |
+        AccountSettings body = new AccountSettings(); // AccountSettings | 
         String authorization = "authorization_example"; // String | SAS Signature
         try {
             AccountSettings result = apiInstance.updateSettings(body, authorization);
@@ -519,7 +519,7 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-
+        
         DefaultApi apiInstance = new DefaultApi();
         String person = "person_example"; // String | Unique Person ID to filter by
         String sig = "sig_example"; // String | Optional SAS Signature within QueryString
@@ -537,7 +537,7 @@ public class DefaultApiExample {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://uswest-nonprod.cjaas.cisco.com/*
+All URIs are relative to *https://trycjaas.azurewebsites.net/*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
