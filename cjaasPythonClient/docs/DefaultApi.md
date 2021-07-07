@@ -1,6 +1,6 @@
 # swagger_client.DefaultApi
 
-All URIs are relative to *https://uswest-nonprod.cjaas.cisco.com/*
+All URIs are relative to *https://trycjaas.azurewebsites.net/*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -55,7 +55,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
+ **authorization** | **str**| SAS Signature | 
 
 ### Return type
 
@@ -104,8 +104,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **person** | **str**| Unique Person ID to filter by |
+ **authorization** | **str**| SAS Signature | 
+ **person** | **str**| Unique Person ID to filter by | 
 
 ### Return type
 
@@ -139,7 +139,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-body = swagger_client.CloudEvent() # CloudEvent |
+body = swagger_client.CloudEvent() # CloudEvent | 
 authorization = 'authorization_example' # str | SAS Signature
 
 try:
@@ -153,8 +153,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**CloudEvent**](CloudEvent.md)|  |
- **authorization** | **str**| SAS Signature |
+ **body** | [**CloudEvent**](CloudEvent.md)|  | 
+ **authorization** | **str**| SAS Signature | 
 
 ### Return type
 
@@ -202,8 +202,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sig** | **str**| SAS Signature within QueryString |
- **data** | **str**| CloudEvent Serialized as Base64 UTF8 String |
+ **sig** | **str**| SAS Signature within QueryString | 
+ **data** | **str**| CloudEvent Serialized as Base64 UTF8 String | 
 
 ### Return type
 
@@ -252,8 +252,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **id** | **str**| Unique Person ID to clear data |
+ **authorization** | **str**| SAS Signature | 
+ **id** | **str**| Unique Person ID to clear data | 
 
 ### Return type
 
@@ -303,9 +303,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **id** | **str**| Unique Person ID to apply action/query upon |
- **alias** | **str**| Unique Person ID to apply action/query upon | [optional]
+ **authorization** | **str**| SAS Signature | 
+ **id** | **str**| Unique Person ID to apply action/query upon | 
+ **alias** | **str**| Unique Person ID to apply action/query upon | [optional] 
 
 ### Return type
 
@@ -354,8 +354,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **id** | **str**| Unique Person ID to clear data |
+ **authorization** | **str**| SAS Signature | 
+ **id** | **str**| Unique Person ID to clear data | 
 
 ### Return type
 
@@ -405,9 +405,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **filter** | **str**| oData Filter Expressions to Slice/Dice Search, ex: type eq &#x27;Add To Cart&#x27; | [optional]
- **top** | **int**| Limit to return latest x events | [optional]
+ **authorization** | **str**| SAS Signature | 
+ **filter** | **str**| oData Filter Expressions to Slice/Dice Search, ex: type eq &#x27;Add To Cart&#x27; | [optional] 
+ **top** | **int**| Limit to return latest x events | [optional] 
 
 ### Return type
 
@@ -458,10 +458,10 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **person** | **str**| Unique Person ID to filter by |
- **filter** | **str**| oData Filter Expressions to Slice/Dice Search, ex: type eq &#x27;Add To Cart&#x27; | [optional]
- **top** | **int**| Limit to return latest x events | [optional]
+ **authorization** | **str**| SAS Signature | 
+ **person** | **str**| Unique Person ID to filter by | 
+ **filter** | **str**| oData Filter Expressions to Slice/Dice Search, ex: type eq &#x27;Add To Cart&#x27; | [optional] 
+ **top** | **int**| Limit to return latest x events | [optional] 
 
 ### Return type
 
@@ -511,9 +511,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **operation** | **str**| Key Operation Type: list or create or rotate |
- **id** | **str**| Unique Key name as set |
+ **authorization** | **str**| SAS Signature | 
+ **operation** | **str**| Key Operation Type: list or create or rotate | 
+ **id** | **str**| Unique Key name as set | 
 
 ### Return type
 
@@ -562,8 +562,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
- **id** | **str**| Unique Key name to delete |
+ **authorization** | **str**| SAS Signature | 
+ **id** | **str**| Unique Key name to delete | 
 
 ### Return type
 
@@ -611,7 +611,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
+ **authorization** | **str**| SAS Signature | 
 
 ### Return type
 
@@ -645,7 +645,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-body = swagger_client.OnlineOrchestration() # OnlineOrchestration |
+body = swagger_client.OnlineOrchestration() # OnlineOrchestration | 
 person = 'person_example' # str | Unique Person ID to filter by
 authorization = 'authorization_example' # str | Optional SAS Signature within Header (optional)
 sig = 'sig_example' # str | Optional SAS Signature within QueryString (optional)
@@ -662,10 +662,10 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**OnlineOrchestration**](OnlineOrchestration.md)|  |
- **person** | **str**| Unique Person ID to filter by |
- **authorization** | **str**| Optional SAS Signature within Header | [optional]
- **sig** | **str**| Optional SAS Signature within QueryString | [optional]
+ **body** | [**OnlineOrchestration**](OnlineOrchestration.md)|  | 
+ **person** | **str**| Unique Person ID to filter by | 
+ **authorization** | **str**| Optional SAS Signature within Header | [optional] 
+ **sig** | **str**| Optional SAS Signature within QueryString | [optional] 
 
 ### Return type
 
@@ -699,7 +699,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-body = swagger_client.ProfileViewBuilderTemplate() # ProfileViewBuilderTemplate |
+body = swagger_client.ProfileViewBuilderTemplate() # ProfileViewBuilderTemplate | 
 authorization = 'authorization_example' # str | SAS Signature
 person_id = 'person_id_example' # str | Identifies the person for whom the profile view is requested
 
@@ -715,9 +715,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**ProfileViewBuilderTemplate**](ProfileViewBuilderTemplate.md)|  |
- **authorization** | **str**| SAS Signature |
- **person_id** | **str**| Identifies the person for whom the profile view is requested |
+ **body** | [**ProfileViewBuilderTemplate**](ProfileViewBuilderTemplate.md)|  | 
+ **authorization** | **str**| SAS Signature | 
+ **person_id** | **str**| Identifies the person for whom the profile view is requested | 
 
 ### Return type
 
@@ -766,8 +766,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **sig** | **str**| Optional SAS Signature within QueryString | [optional]
- **authorization** | **str**| Optional SAS Signature within Header | [optional]
+ **sig** | **str**| Optional SAS Signature within QueryString | [optional] 
+ **authorization** | **str**| Optional SAS Signature within Header | [optional] 
 
 ### Return type
 
@@ -817,9 +817,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **person** | **str**| Unique Person ID to filter by |
- **sig** | **str**| Optional SAS Signature within QueryString | [optional]
- **authorization** | **str**| Optional SAS Signature within Header | [optional]
+ **person** | **str**| Unique Person ID to filter by | 
+ **sig** | **str**| Optional SAS Signature within QueryString | [optional] 
+ **authorization** | **str**| Optional SAS Signature within Header | [optional] 
 
 ### Return type
 
@@ -867,7 +867,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **authorization** | **str**| SAS Signature |
+ **authorization** | **str**| SAS Signature | 
 
 ### Return type
 
@@ -901,7 +901,7 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-body = swagger_client.AccountSettings() # AccountSettings |
+body = swagger_client.AccountSettings() # AccountSettings | 
 authorization = 'authorization_example' # str | SAS Signature
 
 try:
@@ -916,8 +916,8 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | [**AccountSettings**](AccountSettings.md)|  |
- **authorization** | **str**| SAS Signature |
+ **body** | [**AccountSettings**](AccountSettings.md)|  | 
+ **authorization** | **str**| SAS Signature | 
 
 ### Return type
 
@@ -967,9 +967,9 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **person** | **str**| Unique Person ID to filter by |
- **sig** | **str**| Optional SAS Signature within QueryString | [optional]
- **authorization** | **str**| Optional SAS Signature within Header | [optional]
+ **person** | **str**| Unique Person ID to filter by | 
+ **sig** | **str**| Optional SAS Signature within QueryString | [optional] 
+ **authorization** | **str**| Optional SAS Signature within Header | [optional] 
 
 ### Return type
 
