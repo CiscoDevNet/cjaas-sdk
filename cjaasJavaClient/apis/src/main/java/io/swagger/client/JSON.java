@@ -110,7 +110,7 @@ public class JSON {
      * @param obj Object
      * @return String representation of the JSON
      */
-    public String serialize(Object obj) {
+    public String serialize(java.lang.Object obj) {
         return gson.toJson(obj);
     }
 

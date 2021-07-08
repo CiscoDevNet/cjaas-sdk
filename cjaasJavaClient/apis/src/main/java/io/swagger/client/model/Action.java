@@ -68,7 +68,7 @@ public class Action {
 
       @Override
       public ActionTypeEnum read(final JsonReader jsonReader) throws IOException {
-        Object value = jsonReader.nextInt();
+        java.lang.Object value = jsonReader.nextInt();
         return ActionTypeEnum.fromValue(String.valueOf(value));
       }
     }
