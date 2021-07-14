@@ -42,6 +42,7 @@ public class CreateSASToken {
 
     public static void main(String[] args){
         String sasToken = createSasToken("xxxxxxx", "123", "456", "datasink", "read", "orc", 1, 1);
-        System.out.println("Generated Token: " + sasToken);
+        System.out.println(sasToken);
     }
+
 }
