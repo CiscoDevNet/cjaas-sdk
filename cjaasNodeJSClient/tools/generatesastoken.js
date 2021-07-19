@@ -65,7 +65,7 @@ function generateSasToken(args) {
   var keyName = args['kn'];
   var expiration = new Date(generateExpiration(args)).toISOString();
   var sasTokenPrefix = `so=${organization}&sn=${namespace}&ss=${service}&sp=${permissions}&se=${expiration}&sk=${keyName}`;
-  var signature = crypto.createHmac('sha256', secret).update(sasTokenPrefix).digest('base64');
+  var signature = encodeURIComponent(crypto.createHmac('sha256', secret).update(sasTokenPrefix).digest('base64'));
   return `SharedAccessSignature ${sasTokenPrefix}&sig=${signature}`;
 }
 
