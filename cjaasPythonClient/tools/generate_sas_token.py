@@ -44,7 +44,7 @@ class generate_saas_token:
         signature = base64.b64encode(
             hmac.new(secret, message, digestmod=hashlib.sha256).digest())
         result = "SharedAccessSignature " + token + \
-            "&sig=" + urllib.parse.quote(signature.decode("utf-8"))
+            "&sig=" + urllib.parse.quote_plus(signature.decode("utf-8"))
         print('\n' + result)
         return result
 
