@@ -66,6 +66,8 @@ export class CjaasEntry {
    */
   initialize() {
     if (this.sdk) {
+      let expiration = this.getExpiration();
+
       let options: any = {
         initialPageview: true,
         plan: {
@@ -91,10 +93,19 @@ export class CjaasEntry {
             integrations: {},
           },
         },
-        cookie: {
-          maxage: 24 * 60 * 60 * 1000,
-        },
       };
+
+      // Localstorage is used when cookies are not found
+      // When expiration is set, localstorage needs to be disabled
+      if (expiration) {
+        options.cookie = {
+          maxage: expiration,
+        };
+
+        options.localStorage = {
+          enabled: false,
+        };
+      }
 
       if (this.isOrchestrationEnabled()) {
         options.ENABLE_ORCHESTRATION = true;
@@ -250,9 +261,21 @@ export class CjaasEntry {
   isOrchestrationEnabled() {
     if (this.queue?.length > 0) {
       let orchestrationOption = this.queue.find(
-        (x) => x[1] === "ENABLE_ORCHESTRATION"
+        (x) => x[1][0] === "ENABLE_ORCHESTRATION"
       );
-      return (orchestrationOption && orchestrationOption[2]) || false;
+      return (orchestrationOption && orchestrationOption[1][1]) || false;
+    }
+  }
+
+  getExpiration() {
+    if (this.queue?.length > 0) {
+      let expirationOption = this.queue.find(
+        (x) => x[1][0] === "SET_EXPIRATION"
+      );
+
+      if (expirationOption) {
+        return expirationOption[1][1];
+      }
     }
   }
 }
