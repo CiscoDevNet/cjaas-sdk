@@ -43,6 +43,9 @@
       cjaas("option", "PAGE_TRACK", true);
       cjaas("option", "ENABLE_ORCHESTRATION", true);
 
+      // set cookie timer to be 1 min
+      cjaas("option", "SET_EXPIRATION", 1000 * 60);
+
       // tracks the event on first element that maches the selector. (button)
       // cjaas("listen", "button", "Add to Cart", "click");
       // tracks the event on first element that maches the selector. (button)
