@@ -54,7 +54,7 @@
       
       cjaas("identify", `personID`, "Person Name"); 
 
-      //sending data {"title": "Outliers", "price": 50} to server. Track event : User buys book
+      //sending data {"title": "Outliers", "price": 50}. Track event : User buys book
       setTimeout(()=>{
         console.log("fired the event")
         cjaas("track", "User buys book", {"title": "Outliers", "price": 50})},
