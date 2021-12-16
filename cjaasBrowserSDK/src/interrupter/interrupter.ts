@@ -70,7 +70,7 @@ export class CJaaSInterrupter {
   listenToStream() {
     // signature in SAS Token needs to be URL encoded
     let token = this.token?.replace(/sig=(.*)/, (...matches) => {
-      return "sig=" + encodeURIComponent(matches[1]);
+      return "sig=" + matches[1];
     });
 
     let url = `${this.baseURL}/Walkin/${this.name}?${token}`;
