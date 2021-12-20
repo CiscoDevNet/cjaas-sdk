@@ -1,8 +1,11 @@
  # Event Listener
 
-This is a javascript tool based on [analytics js](https://github.com/segmentio/analytics.js/). It helps us listen to customer interactions from a web page and use the data to orchestrate customer journey.
+This is a javascript tool based on [analytics js](https://github.com/segmentio/analytics.js/). It helps us listen to customer interactions from a web page and use the data to orchestrate a customer journey.
 
-## Getting Started
+## Introduction
+The following code snippet sets up the cjaas to any website, and allows us to send sample events such as "Purchase" to CJaaS with Data such as "title" and "Price".
+
+## Start the Server
 
 `Demo` directory has the sample implementation of the script. Use a webserver to serve the root directory of the repo.
 
@@ -12,9 +15,9 @@ This is a javascript tool based on [analytics js](https://github.com/segmentio/a
 
 Navigate to `localhost:8000/demo` in the browser.
 
-# Usage
+## Getting Started
 
-Add the scripts
+Add the script
 
 ```javascript
 // setup queue
@@ -26,7 +29,7 @@ window.cjaas = function (...args) {
   }
 };
 
-// necessary to fetch other dependancies
+// necessary to fetch other dependencies
 // where are the scripts hosted?
 window.cjaas.scriptURL = "https://cjaas.cisco.com/event-listener";
 // where is the server hosted?
@@ -39,10 +42,10 @@ script.async = true;
 document.body.appendChild(script);
 
 
-// sets token to post events
+// sets the token to post events
 cjaas("dsWriteToken", "SAS Token from CJaaS Account for ds service with write access");
 
-// set token to listen for 
+// sets the token to read from the stream
 cjaas("streamReadToken", "SAS Token from CJaaS Account to read from stream");
 
 // page events will be tracked
@@ -55,88 +58,77 @@ cjaas("init");
 //Identify yourself
 cjaas("identify", `personID`, "Person Name"); 
 
-//sending data {"title": "Outliers", "price": 50} . Track event : User buys book
-cjaas("track", "User buys book", {"title": "Name_of_the_book", "price": 50});
-cjaas("track", "User buys book", {"title": "Name_of_the_book", "price": 70});
+
+cjaas("track", "Purchase", {"title": "Outliers", "price": 50});
+cjaas("track", "Purchase", {"title": "My Life in Full", "price": 70});
 ```
 
-This sets up the cjaas to any website, and allows us to send sample events such as "User buys book" to CJaaS with Data such as "title" and "Price".
-After this we can create profile view template and journey action in CJaaS to trigger walkin. 
-
-Journey action has rules in it and when this rules get satisfied against the template, walkin gets triggered. 
+After this we can create profile view template and journey action in CJaaS to trigger walkin. Journey action has rules in it and when this rules get satisfied against the template, walkin gets triggered. 
 
 **Create Profile View Template:**
 
-POST https://cjaas_host_url/v1/journey/views/templates
-
-SAS Token Requirements:
-
-service = profile
-
-permission = w
-
-Headers(Mandatory)
-
-Authorization: SAS Signature
-
-Body
-
-```json
-
-  
+ ```curl
+ 
+ curl -X POST \
+  https://cjaas_host_url/v1/journey/views/templates \
+  -H 'accept: application/json' \
+  -H 'authorization: SAS Signature' \
+  -d '
   {
-      "id": "buying pattern of Some Customer",
-      "namespace": "namespace_details",
-      "organization": "org_details",
+            "id": "book-store-template",
+            "namespace": "namespace_name",
+            "organization": "org_name",
 
-      "attributes": [
-          {
-              "version": "1.0",
-              "event": "User buys book",
-              "metadataType": "string",
-              "metadata": "title",
-              "limit": 100,
-              "displayName": "books bought",
-              "lookbackDurationType": "days",
-              "lookbackPeriod": 30,
-              "aggregationMode": "Value",
-              "verbose": true
-          },
-          {
+            "attributes": [
+                {
+                    "version": "1.0",
+                    "event": "Purchase",
+                    "metadataType": "string",
+                    "metadata": "title",
+                    "limit": 100,
+                    "displayName": "books bought",
+                    "lookbackDurationType": "days",
+                    "lookbackPeriod": 30,
+                    "aggregationMode": "Value",
+                    "verbose": true
+                },
+                {
 
-              "version": "1.0",
-              "event": "User buys book",
-              "metadataType": "string",
-              "metadata": "title",
-              "limit": 100,
-              "displayName": "Number of books bought",
-              "lookbackDurationType": "days",
-              "lookbackPeriod": 30,
-              "aggregationMode": "Count",
-              "verbose": true
-          },
-          {
+                    "version": "1.0",
+                    "event": "Purchase",
+                    "metadataType": "string",
+                    "metadata": "title",
+                    "limit": 100,
+                    "displayName": "Number of books bought",
+                    "lookbackDurationType": "days",
+                    "lookbackPeriod": 30,
+                    "aggregationMode": "Count",
+                    "verbose": true
+                },
+                {
 
-              "version": "1.0",
-              "event": "User buys book",
-              "metadataType": "integer",
-              "metadata": "price",
-              "limit": 100,
-              "displayName": "Total amount spent",
-              "lookbackDurationType": "days",
-              "lookbackPeriod": 50,
-              "aggregationMode": "Sum",
-              "verbose": true
-          }
-      ]
-  }
-  
- ```
+                    "version": "1.0",
+                    "event": "Purchase",
+                    "metadataType": "integer",
+                    "metadata": "price",
+                    "limit": 100,
+                    "displayName": "Total amount spent",
+                    "lookbackDurationType": "days",
+                    "lookbackPeriod": 50,
+                    "aggregationMode": "Sum",
+                    "verbose": true
+                }
+
+            ]
+        }
+   '     
+  ```
+
  Let's closely look at all the three blocks. The first block
  ```json
   {
       "version": "1.0",
-      "event": "User buys book",
+      "event": "Purchase",
       "metadataType": "string",
       "metadata": "title",
       "limit": 100,
@@ -148,7 +140,7 @@ Body
   }
  
   ```
-  It captures all the events called "User buys book", metadata called "title" and "aggregationMode" called "Value". Basically it lists all the titles of the books
+  It captures all the events called "Purchase", metadata called "title" and "aggregationMode" called "Value". Basically it lists all the titles of the books
   bought by an user.
   
   The second block 
@@ -156,7 +148,7 @@ Body
   
   {
       "version": "1.0",
-      "event": "User buys book",
+      "event": "Purchase",
       "metadataType": "string",
       "metadata": "title",
       "limit": 100,
@@ -168,7 +160,7 @@ Body
    }
   
 ```
-It captures all the events called "User buys book", metadata called "title" and "aggregationMode" called "Count". Basically it counts all the books bought by an user.
+It captures all the events called "Purchase", metadata called "title" and "aggregationMode" called "Count". Basically it counts all the books bought by an user.
 
 The thrid block
 ```json
@@ -176,7 +168,7 @@ The thrid block
 {
 
     "version": "1.0",
-    "event": "User buys book",
+    "event": "Purchase",
     "metadataType": "integer",
     "metadata": "price",
     "limit": 100,
@@ -188,47 +180,29 @@ The thrid block
 }
 
 ```
-It captures all the events called "User buys book", metadata called "price" and "aggregationMode" called "Sum". Basically it sums up the total price of the books that has been bought by an user.    
+It captures all the events called "Purchase", metadata called "price" and "aggregationMode" called "Sum". Basically it sums up the total price of the books that has been bought by an user.    
    
-  
- 
 **Create/Replace Journey Action**
 
-POST https://cjaas_host_url/v1/journey/actions
-
-SAS Token Requirements:
-
-service = action
-
-permission = w
-
-Headers(Mandatory)
-
-Authorization: SAS Signature
-
-Note: The templateid in Journey action should match the template created in profile view template.
-
-Body
-
-```json
-{
-    "name": "buying pattern of Some Customer",
-    "organization": "org_details",
-    "templateId": "buying pattern of Some Customer",
+ ```curl
+ curl -X POST \
+  https://cjaas_host_url/v1/journey/actions \
+  -H 'accept: application/json' \
+  -H 'authorization: SAS Signature' \
+  -H 'content-type: application/json' \
+  
+ -d '{
+    "name": "book-store-template",
+    "organization": "org_name",
+    "templateId": "book-store-template",
     "cooldownPeriodInMinutes": 1,
     "active": true,
     "namespace": "namespace_name",
 
-    "rules": {
+     "rules": {
         "args": [
-            "'User buys book','price','Sum' GT 100",
-            {
-                "args": [
-                    "'User buys book','title','Count' GTE 1",
-                    "'User buys book','title','Value' HAS 'Outliers'"
-                ],
-                "logic": "AND"
-            }
+             "'\''Purchase'\'','\''price'\'','\''Sum'\'' GTE 100",
+             "'\''Purchase'\'','\''title'\'','\''Value'\'' HAS '\''Outliers'\''"
         ],
         "logic": "OR"
     },
@@ -240,59 +214,42 @@ Body
         "welcomeMessage": "Hi there!"
     }
   ]
-}
-
+}'
+ 
  ```
+
  
 Let us closely look at the sample rule:
 
 ```json
 
-  "rules": {
-          "args": [
-              "'User buys book','price','Sum' GT 100",
-              {
-                  "args": [
-                      "'User buys book','title','Count' GTE 1",
-                      "'User buys book','title','Value' HAS 'Outliers'"
-                  ],
-                  "logic": "AND"
-              }
-          ],
-          "logic": "OR"
-      }
-
+    "rules": {
+        "args": [
+             "'Purchase','price','Sum' GTE 100",
+             "'Purchase','title','Value' HAS 'Outliers'"
+        ],
+        "logic": "OR"
+    }
+    
  ```
- The outer block is having logical OR condition:
+It has a logical OR condition:
  
  ```json
-  "'User buys book','price','Sum' GTE 100"
+    "'Purchase','price','Sum' GTE 100"
  ```
+ That means the user has to buy books greater than equal to 100 bucks
+ 
  OR
  
  ```json
- "args": [
-    "'User buys book','title','Count' GTE 1",
-    "'User buys book','title','Value' HAS 'Outliers'"
- ]
+ "'Purchase','title','Value' HAS 'Outliers'"
  ```
-Means 
-Look for the condition called "User buys book" and the total price should be more than 100.
+ The title of one of these books should be "Outliers".
 
-If that is not satisfied (Since it's an OR condition), the control goes to the inner block.
- 
- The inner block is having AND condition that means both of these should be TRUE.
- ```json
-  "'User buys book','title','Count' GTE 1",
-  "'User buys book','title','Value' HAS 'Outliers'"
-  ``` 
- That means User has to buy at least one book as the count is greater than equal to 1.
- Also, the title of one of those books should be "Outliers".
- 
 In a nutshell, Webex Walkin will get triggered when 
 
-1. Either user buys book of worth more than 100 
-2. Or User buys at least one book named "Outliers"
+1. Either user buys books of worth 100 bucks or more 
+2. Or User buys a book called "Outliers"
 
 # Other Cjaas Methods
 
