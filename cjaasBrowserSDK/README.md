@@ -3,7 +3,7 @@
 This is a javascript tool based on [analytics js](https://github.com/segmentio/analytics.js/). It helps us listen to customer interactions from a web page and use the data to orchestrate a customer journey.
 
 ## Introduction
-The following code snippet sets up the cjaas to any website, and allows us to send sample events such as "Purchase" to CJaaS with Data such as "title" and "Price".
+The following code snippet sets up CJaas to any website, and allows us to send sample events such as "Purchase" to CJaaS with Data such as "title" and "Price".
 
 ## Start the Server
 
@@ -96,19 +96,6 @@ After this we can create profile view template and journey action in CJaaS to tr
 
                     "version": "1.0",
                     "event": "Purchase",
-                    "metadataType": "string",
-                    "metadata": "title",
-                    "limit": 100,
-                    "displayName": "Number of books bought",
-                    "lookbackDurationType": "days",
-                    "lookbackPeriod": 30,
-                    "aggregationMode": "Count",
-                    "verbose": true
-                },
-                {
-
-                    "version": "1.0",
-                    "event": "Purchase",
                     "metadataType": "integer",
                     "metadata": "price",
                     "limit": 100,
@@ -124,7 +111,7 @@ After this we can create profile view template and journey action in CJaaS to tr
    '     
   ```
 
- Let's closely look at all the three blocks. The first block
+ Let's closely look at all the two blocks. The first block
  ```json
   {
       "version": "1.0",
@@ -142,27 +129,8 @@ After this we can create profile view template and journey action in CJaaS to tr
   ```
   It captures all the events called "Purchase", metadata called "title" and "aggregationMode" called "Value". Basically it lists all the titles of the books
   bought by an user.
-  
-  The second block 
-  ```json
-  
-  {
-      "version": "1.0",
-      "event": "Purchase",
-      "metadataType": "string",
-      "metadata": "title",
-      "limit": 100,
-      "displayName": "Number of books bought",
-      "lookbackDurationType": "days",
-      "lookbackPeriod": 30,
-      "aggregationMode": "Count",
-      "verbose": true
-   }
-  
-```
-It captures all the events called "Purchase", metadata called "title" and "aggregationMode" called "Count". Basically it counts all the books bought by an user.
 
-The thrid block
+The last block
 ```json
 
 {
@@ -217,7 +185,6 @@ It captures all the events called "Purchase", metadata called "price" and "aggre
 }'
  
  ```
-
  
 Let us closely look at the sample rule:
 
