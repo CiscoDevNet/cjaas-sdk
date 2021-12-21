@@ -17,7 +17,7 @@ Navigate to `localhost:8000/demo` in the browser.
 
 ## Getting Started
 
-Add the script
+<h3> 1.  Add the Script </h3> 
 
 ```javascript
 // setup queue
@@ -65,7 +65,8 @@ cjaas("track", "Purchase", {"title": "My Life in Full", "price": 70});
 
 After this we can create profile view template and journey action in CJaaS to trigger walkin. Journey action has rules in it and when this rules get satisfied against the template, walkin gets triggered. 
 
-**Create Profile View Template:**
+
+<h3> 2.  Create Profile View Template </h3> 
 
  ```curl
  
@@ -150,7 +151,7 @@ The last block
 ```
 It captures all the events called "Purchase", metadata called "price" and "aggregationMode" called "Sum". Basically it sums up the total price of the books that has been bought by an user.    
    
-**Create/Replace Journey Action**
+<h3> 3.  Create Journey Action </h3> 
 
  ```curl
  curl -X POST \
