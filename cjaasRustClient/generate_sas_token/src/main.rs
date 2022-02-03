@@ -1,71 +1,168 @@
-use chrono::prelude::*;
-use chrono::Duration;
-use hmac::{Hmac, Mac, NewMac};
-use sha2::Sha256;
-use std::convert::TryInto;
+pub mod sas_token;
 
-type HmacSha256 = Hmac<Sha256>;
-
-pub fn create_sas_token(
-    tenant_key: &str,
-    org: &str,
-    namespace: &str,
-    service: &str,
-    permission: &str,
-    key_name: &str,
-    validity_days: u32,
-    validity_hours: u32,
-) -> String {
-    if validity_days == 0 && validity_hours == 0 {
-        // throw error
-        panic!("Validity should be greater than 0");
-    }
-    // sample date 2021-02-09T04:29:17.463120700TUTC
-    let date = Utc::now()
-        + Duration::days(validity_days.try_into().unwrap())
-        + Duration::hours(validity_hours.try_into().unwrap());
-
-    let token_expires = format!("{:?}", date);
-
-    let token_string = format!(
-        "so={org}&sn={namespace}&ss={service}&sp={permission}&se={token_expires}&sk={key_name}",
-        namespace = namespace,
-        org = org,
-        service = service,
-        permission = permission,
-        token_expires = token_expires,
-        key_name = key_name
-    );
-    let mut hmac = HmacSha256::new_varkey(tenant_key.as_bytes()).unwrap();
-    hmac.update(token_string.as_bytes());
-    let result = hmac.finalize();
-    return format!(
-        "{token_string}&sig={signature}",
-        signature = base64::encode(&result.into_bytes()),
-        token_string = token_string
-    );
-}
+use clap::{App, Arg};
+use sas_token::utils::create_sas_token;
+use std::vec::Vec;
+use urlencoding::encode;
 
 fn main() {
-    let tenant_key = "TENANT_KEY_GOES_HERE";
-    let org = "org_name";
-    let namespace = "sandbox";
-    let service = "action"; //"stream"; //"ds";
-    let permission = "w"; //"r"; //"w";
-    let key_name = "sandbox";
-    let validity_days: u32 = 500;
-    let validity_hours: u32 = 0;
+    let matches = App::new("Generate SAS Token")
+        .version("0.1.0")
+        .author("VenkiV <v3nki@cisco.com>")
+        .about("Generates SharedAccessSignature for Cjaas out of a given secret key")
+        .arg(
+            Arg::with_name("secret")
+                .takes_value(true)
+                .required(true)
+                .help("Secret Tenant Key from CJaaS Admin Portal"),
+        )
+        .arg(
+            Arg::with_name("organization")
+                .short("o")
+                .long("organization")
+                .required(true)
+                .takes_value(true)
+                .help("Organization name"),
+        )
+        .arg(
+            Arg::with_name("namespace")
+                .short("n")
+                .required(true)
+                .long("namespace")
+                .takes_value(true)
+                .help("Namespace name"),
+        )
+        .arg(
+            Arg::with_name("service")
+                .short("s")
+                .long("service")
+                .takes_value(true)
+                .help("Particular Service to be used"),
+        )
+        .arg(
+            Arg::with_name("permission")
+                .short("p")
+                .required(true)
+                .long("permission")
+                .takes_value(true)
+                .help("One of the following permissions (r|w|rw)"),
+        )
+        .arg(
+            Arg::with_name("keyname")
+                .short("k")
+                .required(true)
+                .long("keyname")
+                .takes_value(true)
+                .help("KeyName/AppName from admin portal"),
+        )
+        .arg(
+            Arg::with_name("validityDays")
+                .short("d")
+                .required(true)
+                .long("days")
+                .takes_value(true)
+                .help("Validity in Days"),
+        )
+        .arg(
+            Arg::with_name("validityHours")
+                .short("h")
+                .long("hours")
+                .takes_value(true)
+                .help("Validity in Hours"),
+        )
+        .arg(
+            Arg::with_name("forGadget")
+                .long("for-gadget")
+                .help("Generates Finesse Gadget compatible Query string of SASTokens"),
+        )
+        .get_matches();
 
-    let sas_token = create_sas_token(
-        tenant_key,
-        org,
-        namespace,
-        service,
-        permission,
-        key_name,
-        validity_days,
-        validity_hours,
-    );
+    let tenant_key = matches.value_of("secret").unwrap();
+    let org = matches.value_of("organization").unwrap();
+    let namespace = matches.value_of("namespace").unwrap();
+    let permission = matches.value_of("permission").unwrap(); //"r"; //"w";
+    let key_name = matches.value_of("keyname").unwrap();
+    let validity_days: u32 = matches.value_of("validityDays").unwrap().parse().unwrap();
+    let validity_hours: u32 = match matches.value_of("validityHours") {
+        Some(string) => string.parse().unwrap(),
+        None => 0,
+    };
 
-    println!("{}", sas_token);
+    let for_gadget: bool = matches.is_present("forGadget");
+
+    let services = [
+        ("profile", "r", "profileReadToken"),
+        ("profile", "w", "profileWriteToken"),
+        ("stream", "r", "streamToken"),
+        ("tape", "r", "tapeToken"),
+        ("ds", "w", "datasinkWriteToken"),
+        ("idmt", "r", "identityReadToken"),
+        ("idmt", "w", "identityWriteToken"),
+        ("action", "w", "actionWriteToken"),
+        ("action", "r", "actionReadToken"),
+        ("account", "r", "accountReadToken"),
+    ];
+
+    let services_for_gadget: Vec<_> = vec!["profile", "stream", "tape", "idmt"];
+
+    match matches.value_of("service") {
+        Some(service) => {
+            let sas_token = create_sas_token(
+                tenant_key,
+                org,
+                namespace,
+                service,
+                permission,
+                key_name,
+                validity_days,
+                validity_hours,
+            );
+            println!("------------------SAS String----------------");
+            println!("SharedAccessSignature {}", sas_token);
+        }
+        None => {
+            let mut sas_tokens: Vec<(String, String)> = Vec::new();
+
+            for service in services.iter() {
+                let sas_token = create_sas_token(
+                    tenant_key,
+                    org,
+                    namespace,
+                    service.0,
+                    service.1,
+                    key_name,
+                    validity_days,
+                    validity_hours,
+                );
+
+                if for_gadget && services_for_gadget.contains(&service.0) {
+                    sas_tokens.push((sas_token.clone(), service.2.to_string()));
+                };
+
+                println!(
+                    "------------------SAS String for {} with {} permission---------------",
+                    service.0, service.1
+                );
+                println!("SharedAccessSignature {}", sas_token);
+                println!();
+            }
+
+            let mut query_string = "?".to_owned();
+
+            let mut count = 0;
+            for sas_token in sas_tokens.iter() {
+                query_string.push_str(&sas_token.1);
+                query_string.push_str("=");
+                query_string.push_str(&encode(&sas_token.0));
+                if count != sas_tokens.len() - 1 {
+                    query_string.push_str("&");
+                }
+                count = count + 1;
+            }
+
+            println!("-----------------------Query String for Customer Journey Gadget----------------------");
+            println!("SharedAccessSignature {}", query_string);
+            println!();
+        }
+    };
 }
