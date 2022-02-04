@@ -1,18 +1,23 @@
-# Event Listener
+ # Event Listener
 
-This is a javascript tool based on [analytics js](https://github.com/segmentio/analytics.js/). It helps us listen to customer interactions from a web page and use the data to orchestrate customer journey.
+This is a javascript tool based on [analytics js](https://github.com/segmentio/analytics.js/). It helps us listen to customer interactions from a web page and use the data to orchestrate a customer journey.
 
-## Getting Started
+## Introduction
+The following code snippet sets up CJaas to any website, and allows us to send sample events such as "Purchase" to CJaaS with Data such as "title" and "Price".
+
+## Start the Server
 
 `Demo` directory has the sample implementation of the script. Use a webserver to serve the root directory of the repo.
+
+`sudo npm install -g live-server`
 
 `live-server .`
 
 Navigate to `localhost:8000/demo` in the browser.
 
-# Usage
+## Getting Started
 
-Add the scripts
+<h3> 1.  Add the Script </h3> 
 
 ```javascript
 // setup queue
@@ -24,40 +29,232 @@ window.cjaas = function (...args) {
   }
 };
 
-// necessary to fetch other dependancies
+// necessary to fetch other dependencies
+// where are the scripts hosted?
 window.cjaas.scriptURL = "https://cjaas.cisco.com/event-listener";
+// where is the server hosted?
+window.cjaas.baseURL = "https://uswest-nonprod.cjaas.cisco.com";
 
-let script = document.createElement("script");
+var script = document.createElement("script");
 script.src = window.cjaas.scriptURL + "/ref-cj-analytics.js";
 script.type = "module";
 script.async = true;
 document.body.appendChild(script);
 
 
-// sets token to post events
+// sets the token to post events
 cjaas("dsWriteToken", "SAS Token from CJaaS Account for ds service with write access");
 
-// set token to listen for 
+// sets the token to read from the stream
 cjaas("streamReadToken", "SAS Token from CJaaS Account to read from stream");
 
 // page events will be tracked
 cjaas("option", "PAGE_TRACK", true);
+cjaas("option", "ENABLE_ORCHESTRATION", true);
 
-// tracks the event on first element that maches the selector. (button)
+// init tracking
+cjaas("init");
+
+//Identify yourself
+cjaas("identify", `personID`, "Person Name"); 
+
+
+cjaas("track", "Purchase", {"title": "Outliers", "price": 50});
+cjaas("track", "Purchase", {"title": "My Life in Full", "price": 70});
+```
+
+After this we can create profile view template and journey action in CJaaS to trigger walkin. Journey action has rules in it and when this rules get satisfied against the template, walkin gets triggered. 
+
+
+<h3> 2.  Create Profile View Template </h3> 
+
+ ```curl
+ 
+ curl -X POST \
+  https://cjaas_host_url/v1/journey/views/templates \
+  -H 'accept: application/json' \
+  -H 'authorization: SAS Signature' \
+  -d '
+  {
+            "id": "book-store-template",
+            "namespace": "namespace_name",
+            "organization": "org_name",
+
+            "attributes": [
+                {
+                    "version": "1.0",
+                    "event": "Purchase",
+                    "metadataType": "string",
+                    "metadata": "title",
+                    "limit": 100,
+                    "displayName": "books bought",
+                    "lookbackDurationType": "days",
+                    "lookbackPeriod": 30,
+                    "aggregationMode": "Value",
+                    "verbose": true
+                },
+                {
+
+                    "version": "1.0",
+                    "event": "Purchase",
+                    "metadataType": "integer",
+                    "metadata": "price",
+                    "limit": 100,
+                    "displayName": "Total amount spent",
+                    "lookbackDurationType": "days",
+                    "lookbackPeriod": 50,
+                    "aggregationMode": "Sum",
+                    "verbose": true
+                }
+
+            ]
+        }
+   '     
+  ```
+
+ Let's closely look at all the two blocks. The first block
+ ```json
+  {
+      "version": "1.0",
+      "event": "Purchase",
+      "metadataType": "string",
+      "metadata": "title",
+      "limit": 100,
+      "displayName": "books bought",
+      "lookbackDurationType": "days",
+      "lookbackPeriod": 30,
+      "aggregationMode": "Value",
+      "verbose": true
+  }
+ 
+  ```
+  It captures all the events called "Purchase", metadata called "title" and "aggregationMode" called "Value". Basically it lists all the titles of the books
+  bought by an user.
+
+The last block
+```json
+
+{
+
+    "version": "1.0",
+    "event": "Purchase",
+    "metadataType": "integer",
+    "metadata": "price",
+    "limit": 100,
+    "displayName": "Total amount spent",
+    "lookbackDurationType": "days",
+    "lookbackPeriod": 50,
+    "aggregationMode": "Sum",
+    "verbose": true
+}
+
+```
+It captures all the events called "Purchase", metadata called "price" and "aggregationMode" called "Sum". Basically it sums up the total price of the books that has been bought by an user.    
+   
+<h3> 3.  Create Journey Action </h3> 
+
+ ```curl
+ curl -X POST \
+  https://cjaas_host_url/v1/journey/actions \
+  -H 'accept: application/json' \
+  -H 'authorization: SAS Signature' \
+  -H 'content-type: application/json' \
+  
+ -d '{
+    "name": "book-store-template",
+    "organization": "org_name",
+    "templateId": "book-store-template",
+    "cooldownPeriodInMinutes": 1,
+    "active": true,
+    "namespace": "namespace_name",
+
+     "rules": {
+        "args": [
+             "'\''Purchase'\'','\''price'\'','\''Sum'\'' GTE 100",
+             "'\''Purchase'\'','\''title'\'','\''Value'\'' HAS '\''Outliers'\''"
+        ],
+        "logic": "OR"
+    },
+    "actionTriggers": [
+      {
+        "type": "WebexWalkin",
+        "agentId": "sumamitr@cisco.com",
+        "title": "Agent Calling",
+        "welcomeMessage": "Hi there!"
+    }
+  ]
+}'
+ 
+ ```
+ 
+Let us closely look at the sample rule:
+
+```json
+
+    "rules": {
+        "args": [
+             "'Purchase','price','Sum' GTE 100",
+             "'Purchase','title','Value' HAS 'Outliers'"
+        ],
+        "logic": "OR"
+    }
+    
+ ```
+It has a logical OR condition:
+ 
+ ```json
+    "'Purchase','price','Sum' GTE 100"
+ ```
+ That means the user has to buy books greater than equal to 100 bucks
+ 
+ OR
+ 
+ ```json
+ "'Purchase','title','Value' HAS 'Outliers'"
+ ```
+ The title of one of these books should be "Outliers".
+
+In a nutshell, Webex Walkin will get triggered when 
+
+1. Either user buys books of worth 100 bucks or more 
+2. Or User buys a book called "Outliers"
+
+# Other Cjaas Methods
+
+**"token"**
+
+Sets the token to the SDK which will be used to authorize the events while posting it to server.
+
+**"option"**
+
+Sets additional options to the SDK.
+
+**PAGE_TRACK**
+
+enables page tracking
+
+**"listen"**
+
+Attaches event listener to the elements that match the given selector. It uses the standard CSS selectors.
+It accepts Event name/ Tag as third argument. This will be posted as 'type' in the payload along with other data when interaction happens.
+It accepts an attribute or list of attributes that have to be attached along with the event. Eg, product_id
+
+```javascript
+// tracks the event on first element that matches the selector. (button)
 cjaas("listen", "button", "Add to Cart", "click");
+```
 
-// tracks the event on first element that maches the selector. (button)
-// sends the attribute product id from each of the button
+**"listen_all"**
+This event is same as "listen" mentioned above. Except that it tracks events from all elements that matches the specified CSS selector.
+
+```javascript      
+// tracks the event on all elements that matches the selector. (button)
+// sends the attribute product_id & product_sku from each of the button
 cjaas("listen_all", "button", "Add to Cart", "click", [
   "data-product_id",
   "data-product_sku"
 ]);
-
-// init tracking
-cjaas("init");
 ```
-
-This sets up the cjaas to any website. This example shows how to add tracking on one or all of buttons for click. It uses standard CSS selectors to identify such elements.
 
 # Customizable BASE URL
 
@@ -97,3 +294,8 @@ window.cjaas.scriptURL = "https://cloud-storage-container-url/folder-name";
 # Integration with With Segment.io (WIP)
 
 `wxm-integration.js` is built to be integrated with segment io and start tracking events.
+
+
+
+
+

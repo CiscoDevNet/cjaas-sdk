@@ -25,42 +25,42 @@
       // window.cjaas.scriptURL = "https://cjaas.cisco.com/event-listener";
 
       // where is the server hosted?
-      // window.cjaas.baseURL = "https://uswest-nonprod.cjaas.cisco.com";
-
-      let script = document.createElement("script");
+      window.cjaas.baseURL = "https://uswest-nonprod.cjaas.cisco.com";
+      
+     
+      var script = document.createElement("script");
+    
       script.src = window.cjaas.scriptURL + "/ref-cj-analytics.js";
-      script.type = "module";
+      script.type = "module"; 
       script.async = true;
       document.body.appendChild(script);
-
+      
       // sets the Datasink write token
       cjaas("dsWriteToken", "sample-id-est");
-
-      // sets the stream read token
+      
+      // set token to listen for 
       cjaas("streamReadToken", "sample-id-est");
 
+    
       // page events will be tracked
       cjaas("option", "PAGE_TRACK", true);
       cjaas("option", "ENABLE_ORCHESTRATION", true);
 
-      // tracks the event on first element that maches the selector. (button)
-      // cjaas("listen", "button", "Add to Cart", "click");
-      // tracks the event on first element that maches the selector. (button)
-      // sends the attribute product id from each of the button
-
-      cjaas("listen_all", "button", "Add to Cart", "click", [
-        "data-product_id",
-        "data-product_sku",
-      ]);
-
       // init tracking
       cjaas("init");
+      
 
-      setInterval(() => {
-        let span = document.createElement("span");
-        span.innerText = "Hello";
-        document.body.appendChild(span);
-      }, 1000);
+      //Identify yourself
+      
+      cjaas("identify", `personID`, "Person Name"); 
+
+      //sending data {"title": "Outliers", "price": 50}. Track event : User buys book
+      setTimeout(()=>{
+        console.log("fired the event")
+        cjaas("track", "User buys book", {"title": "Outliers", "price": 50})},
+      20000);
+      cjaas("track", "User buys book", {"title": "My Life in Full", "price": 70});
+     
     </script>
 
     <script>
