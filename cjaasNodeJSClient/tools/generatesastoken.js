@@ -178,7 +178,11 @@ function generateSasTokens(args) {
       keyName,
       expiration,
     );
-    return `SharedAccessSignature ${token}`;
+
+    console.log(
+      `\n======================SAS Token for ${service} with ${permission} permission=======================================`,
+    );
+    console.log(`SharedAccessSignature ${token}`);
   }
 }
 

@@ -64,7 +64,7 @@ def parse_command_line_args():
                             help="validitydays: expire in this number of days", type=int)
     arg_parser.add_argument("--vh", required=False, default=1,
                             help="validityhours:expire in this number of hours", type=int)
-    arg_parser.add_argument("--a", required=False, default=None, action="store_true"
+    arg_parser.add_argument("--a", required=False, default=None, action="store_true",
                             help="generate all tokens for JDS")
     arg_parser.add_argument("--g", required=False, default=False, action="store_true",
                             help="for-gadget will generate query string for Customer Journey Gadget")
