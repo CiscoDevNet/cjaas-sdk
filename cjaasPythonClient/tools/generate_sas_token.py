@@ -20,6 +20,31 @@ services = (
 
 services_for_gadget = ("profile", "stream", "tape", "idmt")
 
+def generate_all_tokens(param, valid_until):
+    query_string = []
+    for x in services:
+        token= "so=" + param.o + "&sn=" + param.n + "&ss=" + x[0] + \
+            "&sp=" + x[1] + "&se=" + \
+            valid_until + "Z&sk=" + param.kn
+
+        result = generate_signature(token, param.secret)
+        if param.a == True:
+            print('\n-----------------------------------SAS Token for ' + x[0] + ' with '+ x[1] + ' permission------------------------')
+            print('\nSharedAccessSignature ' + result)
+        
+        if param.g == True and x[0] in services_for_gadget:
+            query_string.append([x[2], result])
+        
+    if param.g == True:
+        query = '?'
+        index = 0
+        for tup in query_string:
+            query += tup[0]  + '=' + urllib.parse.quote_plus(tup[1])
+            index += 1
+            if index != len(query_string):
+                query += '&' 
+        print('\n-----------------------------------Query String for Customer Journey Gadget------------------------')
+        print('\n' + query)
 
 def parse_command_line_args():
     arg_parser = ArgumentParser()
@@ -39,8 +64,10 @@ def parse_command_line_args():
                             help="validitydays: expire in this number of days", type=int)
     arg_parser.add_argument("--vh", required=False, default=1,
                             help="validityhours:expire in this number of hours", type=int)
-    arg_parser.add_argument("--g", required=False, default=False,
-                            help="for-gadget will generate query string for Customer Journey Gadget", type=bool)
+    arg_parser.add_argument("--a", required=False, default=None, action="store_true"
+                            help="generate all tokens for JDS")
+    arg_parser.add_argument("--g", required=False, default=False, action="store_true",
+                            help="for-gadget will generate query string for Customer Journey Gadget")
     return arg_parser.parse_args()
 
 def generate_signature(token, param_secret):
@@ -54,7 +81,7 @@ def generate_signature(token, param_secret):
     return result
 
 
-class generate_saas_token:
+class generate_sas_token:
 
     @classmethod
     def generate_token(cls, param):
@@ -64,33 +91,18 @@ class generate_saas_token:
             return
         if param.vd == 0 and param.vh == 0:
             raise ValueError("Both validityDays and validityHours can't be 0")
+        
         valid_until = (datetime.utcnow() + timedelta(days=param.vd) + timedelta(
             hours=param.vh)).isoformat(timespec='milliseconds')
 
-        if param.s == None or param.p == None:
-            query_string = []
-            for x in services:
-                token= "so=" + param.o + "&sn=" + param.n + "&ss=" + x[0] + \
-                    "&sp=" + x[1] + "&se=" + \
-                    valid_until + "Z&sk=" + param.kn
+        if param.a == True or param.g == True:
+           return generate_all_tokens(param, valid_until)
 
-                result = generate_signature(token, param.secret)
-                print('\n-----------------------------------SAS Token for ' + x[0] + ' with '+ x[1] + ' permission------------------------')
-                print('\nSharedAccessSignature ' + result)
-                if x[0] in services_for_gadget:
-                    query_string.append([x[2], result])
-                
-            if param.g == True:
-                query = '?'
-                index = 0
-                for tup in query_string:
-                    query += tup[0]  + '=' + urllib.parse.quote_plus(tup[1])
-                    index += 1
-                    if index != len(query_string):
-                        query += '&' 
-                print('\n-----------------------------------Query String for Customer Journey Gadget------------------------')
-                print('\n' + query)
         else:
+            if param.s == None or param.p == None:
+                print('\n Service and Permission are required to generate SASToken')
+                return
+
             token = "so=" + param.o + "&sn=" + param.n + "&ss=" + param.s + \
                 "&sp=" + param.p + "&se=" + \
                 valid_until + "Z&sk=" + param.kn
@@ -101,4 +113,4 @@ class generate_saas_token:
         return result
 
 if __name__ == "__main__":
-    generate_saas_token.generate_token((parse_command_line_args()))
+    generate_sas_token.generate_token((parse_command_line_args()))
