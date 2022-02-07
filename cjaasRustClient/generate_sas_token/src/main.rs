@@ -71,7 +71,14 @@ fn main() {
                 .help("Validity in Hours"),
         )
         .arg(
+            Arg::with_name("all")
+                .short("a")
+                .long("all")
+                .help("Generates all necessary SASTokens for JDS"),
+        )
+        .arg(
             Arg::with_name("forGadget")
+                .short("g")
                 .long("for-gadget")
                 .help("Generates Finesse Gadget compatible Query string of SASTokens"),
         )
@@ -80,14 +87,13 @@ fn main() {
     let tenant_key = matches.value_of("secret").unwrap();
     let org = matches.value_of("organization").unwrap();
     let namespace = matches.value_of("namespace").unwrap();
-    let permission = matches.value_of("permission").unwrap(); //"r"; //"w";
     let key_name = matches.value_of("keyname").unwrap();
     let validity_days: u32 = matches.value_of("validityDays").unwrap().parse().unwrap();
     let validity_hours: u32 = match matches.value_of("validityHours") {
         Some(string) => string.parse().unwrap(),
         None => 0,
     };
-
+    let all: bool = matches.is_present("all");
     let for_gadget: bool = matches.is_present("forGadget");
 
     let services = [
@@ -105,40 +111,26 @@ fn main() {
 
     let services_for_gadget: Vec<_> = vec!["profile", "stream", "tape", "idmt"];
 
-    match matches.value_of("service") {
-        Some(service) => {
+    if all || for_gadget {
+        let mut sas_tokens: Vec<(String, String)> = Vec::new();
+
+        for service in services.iter() {
             let sas_token = create_sas_token(
                 tenant_key,
                 org,
                 namespace,
-                service,
-                permission,
+                service.0,
+                service.1,
                 key_name,
                 validity_days,
                 validity_hours,
             );
-            println!("------------------SAS String----------------");
-            println!("SharedAccessSignature {}", sas_token);
-        }
-        None => {
-            let mut sas_tokens: Vec<(String, String)> = Vec::new();
 
-            for service in services.iter() {
-                let sas_token = create_sas_token(
-                    tenant_key,
-                    org,
-                    namespace,
-                    service.0,
-                    service.1,
-                    key_name,
-                    validity_days,
-                    validity_hours,
-                );
+            if for_gadget && services_for_gadget.contains(&service.0) {
+                sas_tokens.push((sas_token.clone(), service.2.to_string()));
+            };
 
-                if for_gadget && services_for_gadget.contains(&service.0) {
-                    sas_tokens.push((sas_token.clone(), service.2.to_string()));
-                };
-
+            if all {
                 println!(
                     "------------------SAS String for {} with {} permission---------------",
                     service.0, service.1
@@ -146,9 +138,10 @@ fn main() {
                 println!("SharedAccessSignature {}", sas_token);
                 println!();
             }
+        }
 
+        if for_gadget {
             let mut query_string = "?".to_owned();
-
             let mut count = 0;
             for sas_token in sas_tokens.iter() {
                 query_string.push_str(&sas_token.1);
@@ -159,10 +152,34 @@ fn main() {
                 }
                 count = count + 1;
             }
-
-            println!("-----------------------Query String for Customer Journey Gadget----------------------");
-            println!("SharedAccessSignature {}", query_string);
+            println!(
+                "-----------------------Query String for Customer Journey Gadget----------------------"
+            );
+            println!("{}", query_string);
             println!();
         }
-    };
+    } else {
+        if matches.is_present("service") && matches.is_present("permission") {
+            let service = matches.value_of("service").unwrap();
+            let permission = matches.value_of("permission").unwrap();
+
+            let sas_token = create_sas_token(
+                tenant_key,
+                org,
+                namespace,
+                service,
+                permission,
+                key_name,
+                validity_days,
+                validity_hours,
+            );
+            println!(
+                "------------------SAS String with {} with {} permission----------------",
+                service, permission
+            );
+            println!("SharedAccessSignature {}", sas_token);
+        } else {
+            println!("Service (-s) and Permission (-p) are required for generating SAS Token");
+        }
+    }
 }
