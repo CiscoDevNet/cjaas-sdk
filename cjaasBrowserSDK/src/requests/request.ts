@@ -60,7 +60,7 @@ export class CJaasRequests {
   ) {
     let payload = this.preparePayload(...args);
 
-    axios.post(this.baseURL + "/v1/journey/events", payload, {
+    axios.post(this.baseURL + "/events/v1/journey", payload, {
       headers: {
         "Content-type": "application/cloudevents+json",
         Authorization: "SharedAccessSignature " + this._authToken,

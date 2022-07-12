@@ -1186,7 +1186,7 @@ class JourneyApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/journey/events', 'POST',
+            '/events/v1/journey', 'POST',
             path_params,
             query_params,
             header_params,
@@ -1404,7 +1404,7 @@ class JourneyApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/journey/events', 'GET',
+            '/events/v1/journey', 'GET',
             path_params,
             query_params,
             header_params,
@@ -1515,7 +1515,7 @@ class JourneyApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/journey/events/{identity}', 'GET',
+            '/events/v1/journey/{identity}', 'GET',
             path_params,
             query_params,
             header_params,
