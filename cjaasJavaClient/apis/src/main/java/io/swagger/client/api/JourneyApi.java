@@ -1467,7 +1467,7 @@ public class JourneyApi {
         Object localVarPostBody = body;
         
         // create path and map variables
-        String localVarPath = "/v1/journey/events";
+        String localVarPath = "/events/v1/journey";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -1746,7 +1746,7 @@ public class JourneyApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v1/journey/events";
+        String localVarPath = "/events/v1/journey";
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
         List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
@@ -1885,7 +1885,7 @@ public class JourneyApi {
         Object localVarPostBody = null;
         
         // create path and map variables
-        String localVarPath = "/v1/journey/events/{identity}"
+        String localVarPath = "/events/v1/journey/{identity}"
             .replaceAll("\\{" + "identity" + "\\}", apiClient.escapeString(identity.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();

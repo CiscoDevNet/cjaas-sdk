@@ -500,7 +500,7 @@ pub async fn post_events(configuration: &configuration::Configuration, authoriza
 
     let local_var_client = &configuration.client;
 
-    let local_var_uri_str = format!("{}/v1/journey/events", configuration.base_path);
+    let local_var_uri_str = format!("{}/events/v1/journey", configuration.base_path);
     let mut local_var_req_builder = local_var_client.post(local_var_uri_str.as_str());
 
     if let Some(ref local_var_user_agent) = configuration.user_agent {
@@ -559,7 +559,7 @@ pub async fn read_events(configuration: &configuration::Configuration, authoriza
 
     let local_var_client = &configuration.client;
 
-    let local_var_uri_str = format!("{}/v1/journey/events", configuration.base_path);
+    let local_var_uri_str = format!("{}/events/v1/journey", configuration.base_path);
     let mut local_var_req_builder = local_var_client.get(local_var_uri_str.as_str());
 
     if let Some(ref local_var_str) = filter {
@@ -593,7 +593,7 @@ pub async fn read_events_by_identity(configuration: &configuration::Configuratio
 
     let local_var_client = &configuration.client;
 
-    let local_var_uri_str = format!("{}/v1/journey/events/{identity}", configuration.base_path, identity=crate::apis::urlencode(identity));
+    let local_var_uri_str = format!("{}/events/v1/journey/{identity}", configuration.base_path, identity=crate::apis::urlencode(identity));
     let mut local_var_req_builder = local_var_client.get(local_var_uri_str.as_str());
 
     if let Some(ref local_var_str) = filter {
